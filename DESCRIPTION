@@ -1,10 +1,10 @@
 Package: ftools
-Title: What the Package Does (One Line, Title Case)
+Title: Tools for working with files.
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Luís Gustavo", "Schuck", 
+    "luisgustavoschuck@yahoo.com.br", role = c("aut", "cre") )
+Description: Tools for working with files.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
