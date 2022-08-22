@@ -2,8 +2,7 @@ Package: ftools
 Title: Tools for working with files.
 Version: 0.0.0.9000
 Authors@R: 
-    person("Luís Gustavo", "Schuck", 
-    "luisgustavoschuck@yahoo.com.br", role = c("aut", "cre") )
+    person("Luís Gustavo", "Schuck", "luisgustavoschuck@yahoo.com.br", role = c("aut", "cre") )
 Description: Tools for working with files.
 License: MIT + file LICENSE
 Encoding: UTF-8
