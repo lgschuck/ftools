@@ -25,7 +25,7 @@ devtools::install_github("lgschuck/ftools")
 library(ftools)
 ```
 
-## Function dif_mont
+## Function dif_month
 
 This function calculates the difference in months between two dates.
 
