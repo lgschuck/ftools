@@ -6,9 +6,9 @@
 #'
 #' @examples
 #'
-#' #ftools::dif_month(as.Date('2022-12-15'),as.Date('2022-03-15'))
+#' dif_month(as.Date('2022-12-15'),as.Date('2022-03-15'))
 #'
-#' #ftools::dif_month(as.Date('2022-12-15'),as.Date('2023-03-15'))
+#' dif_month(as.Date('2022-12-15'),as.Date('2023-03-15'))
 #'
 dif_month <- function(date1, date2){
 

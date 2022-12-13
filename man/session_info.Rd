@@ -9,3 +9,7 @@ session_info()
 \description{
 Function for info about current R session
 }
+\examples{
+session_info()
+
+}
