@@ -35,26 +35,3 @@ devtools::install_github("lgschuck/ftools")
 library(ftools)
 ```
 
-## Function dif_month
-
-This function calculates the difference in months between two dates.
-
-```{r}
-x1 <- c(Sys.Date()+10, Sys.Date()+5)
-x2 <- c(Sys.Date()+100, Sys.Date()+58)
-
-x1
-x2
-dif_month(x2,x1)
-
-x2 <- c(Sys.Date()+100, Sys.Date()+358)
-
-x1
-x2
-
-dif_month(x2,x1)
-
-dif_month(x1,x2)
-
-```
-

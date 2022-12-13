@@ -1,6 +1,6 @@
 #' Function for info about current R session
 #' @export session_info
-#' session_info()
+#'
 #'
 session_info <- function(){
   r_version <- getRversion()
