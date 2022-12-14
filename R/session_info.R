@@ -12,20 +12,18 @@ session_info <- function(){
   libs <- .libPaths()
   env_obj <- ls(all.names = T, envir = globalenv())
   search <- search()
+  pacotes <- installed.packages()
 
-  header = "\n===========================================\n"
+  header <- "\n=========================================\n"
 
   writeLines(paste0(header,
                     "R Version:\t",
                     r_version,
-                    header,
-                    "User:\t",
+                    "\nUser:\t",
                     user,
-                    header,
-                    "Machine:\t",
+                    "\nMachine:\t",
                     machine,
-                    header,
-                    "Time:\t",
+                    "\nTime:\t",
                     time,
                     header,
                     "Libraries:\n\t",
@@ -37,7 +35,6 @@ session_info <- function(){
                     "Search:\n\t",
                     paste(search, collapse = "\n\t"),
                     header
-
                     ))
 
 }
