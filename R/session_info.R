@@ -18,7 +18,7 @@ session_info <- function(){
   writeLines(paste0(header,
                     "R Version: \t",
                     r_version,
-                    "\nOS:\t",
+                    "\nSystem:\t",
                     system,
                     "\nUser:\t",
                     user,
