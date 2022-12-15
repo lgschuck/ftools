@@ -2,3 +2,4 @@
 
 export(dif_month)
 export(session_info)
+export(write_log)
