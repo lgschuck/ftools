@@ -1,10 +1,10 @@
 Package: ftools
-Title: Tools for working with data.
-Version: 0.0.0.9000
+Title: Tools to facilitate working with data in R.
+Version: 0.1.0.9000
 Authors@R: 
     person("Luís Gustavo", "Schuck", email="luisgustavoschuck@yahoo.com.br",  
     role = c("aut", "cre") )
-Description: Tools for working with data.
+Description: Tools to facilitate working with data in R.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
