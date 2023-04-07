@@ -7,14 +7,16 @@
 write_log(message = "", file = "log.txt")
 }
 \arguments{
-\item{message}{message to be saved in the log file
-
-#' @examples
-write_log('A Simple Test.')
-readLines("log.txt")}
+\item{message}{message to be saved in the log file}
 
 \item{file}{log file}
 }
 \description{
 Function for write messages in text file
+}
+\examples{
+write_log('A Simple Test.', file = 'log_file.txt')
+readLines('log_file.txt')
+
+
 }
