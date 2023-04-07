@@ -4,7 +4,17 @@
 \alias{session_info}
 \title{Function for info about current R session}
 \usage{
-session_info()
+session_info(
+  r_version = getRversion(),
+  system = osVersion,
+  user = Sys.getenv("USERNAME"),
+  machine = Sys.getenv("COMPUTERNAME"),
+  time = format(Sys.time(), "\%Y/\%m/\%d - \%X"),
+  libs = .libPaths(),
+  env_obj = ls(all.names = T, envir = globalenv()),
+  header = paste0("\\n", paste0(rep("=", 60), collapse = ""), "\\n"),
+  limit = 12
+)
 }
 \description{
 Function for info about current R session

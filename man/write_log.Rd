@@ -7,7 +7,11 @@
 write_log(message = "", file = "log.txt")
 }
 \arguments{
-\item{message}{message to be saved in the log file}
+\item{message}{message to be saved in the log file
+
+#' @examples
+write_log('A Simple Test.')
+readLines("log.txt")}
 
 \item{file}{log file}
 }
