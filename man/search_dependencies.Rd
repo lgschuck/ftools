@@ -15,6 +15,7 @@ search_dependencies(packages, type = "Imports")
 Function for get dependencies recursively, excluding R base packages.
 }
 \examples{
+
 search_dependencies(c('dplyr', 'shiny', 'data.table'))
 
 }

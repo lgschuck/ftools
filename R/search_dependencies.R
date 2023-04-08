@@ -3,9 +3,12 @@
 #'
 #' @param packages vector with packages names
 #' @param type type of dependencies. Like package_dependencies from tools package.
+#'
 #' @examples
+#'
 #' search_dependencies(c('dplyr', 'shiny', 'data.table'))
 #'
+
 search_dependencies <- function(packages,
                                 type = 'Imports') {
   dependencies <- tools::package_dependencies(packages,
@@ -14,9 +17,12 @@ search_dependencies <- function(packages,
 
   # Remove dependencies that are base R packages
   base_r_packages <- rownames(installed.packages(priority = "base"))
+
+  dependencies <- unique(unlist(dependencies))
+  dependencies <- sort(dependencies)
+
   dependencies <-
-    unlist(dependencies[!(dependencies %in% base_r_packages)],
-           use.names = F)
+    dependencies[!(dependencies %in% base_r_packages)]
 
   return(dependencies)
 }

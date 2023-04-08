@@ -15,8 +15,8 @@ write_log(message = "", file = "log.txt")
 Function for write messages in text file
 }
 \examples{
+
 write_log('A Simple Test.', file = 'log_file.txt')
 readLines('log_file.txt')
-
 
 }
