@@ -8,7 +8,6 @@
 #'
 #' search_dependencies(c('dplyr', 'shiny', 'data.table'))
 #'
-
 search_dependencies <- function(packages,
                                 type = 'Imports') {
   dependencies <- tools::package_dependencies(packages,
@@ -19,10 +18,10 @@ search_dependencies <- function(packages,
   base_r_packages <- rownames(installed.packages(priority = "base"))
 
   dependencies <- unique(unlist(dependencies))
+
+  dependencies <- dependencies[!(dependencies %in% base_r_packages)]
+
   dependencies <- sort(dependencies)
 
-  dependencies <-
-    dependencies[!(dependencies %in% base_r_packages)]
-
-  return(dependencies)
+    return(dependencies)
 }
