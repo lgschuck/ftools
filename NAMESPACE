@@ -3,4 +3,5 @@
 export(dif_month)
 export(search_dependencies)
 export(session_info)
+export(sum2)
 export(write_log)
