@@ -12,6 +12,8 @@
 write_log <- function(message = '', file = 'log.txt') {
   message <- paste(format(Sys.time(), "%Y-%m-%d %X"),
                    '|',
+                   Sys.getenv('COMPUTERNAME'),
+                   '|',
                    Sys.getenv('USERNAME'),
                    '|',
                    message,
