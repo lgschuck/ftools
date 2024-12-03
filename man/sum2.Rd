@@ -6,6 +6,9 @@
 \usage{
 sum2(x)
 }
+\arguments{
+\item{x}{Object to sum}
+}
 \description{
 Function for sum removing NAs
 }

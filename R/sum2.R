@@ -1,4 +1,7 @@
 #' Function for sum removing NAs
+#'
+#' @param x Object to sum
+#'
 #' @export sum2
 #'
 #' @examples

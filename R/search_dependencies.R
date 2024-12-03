@@ -6,7 +6,11 @@
 #'
 #' @examples
 #'
+#' options(repos = c(CRAN = 'https://cran.rstudio.com/'))
 #' search_dependencies(c('dplyr', 'shiny', 'data.table'))
+#'
+#' @importFrom tools package_dependencies
+#' @importFrom utils installed.packages
 #'
 search_dependencies <- function(packages,
                                 type = 'Imports') {
@@ -15,7 +19,7 @@ search_dependencies <- function(packages,
                                               which = type)
 
   # Remove dependencies that are base R packages
-  base_r_packages <- rownames(installed.packages(priority = "base"))
+  base_r_packages <- rownames(utils::installed.packages(priority = "base"))
 
   dependencies <- unique(unlist(dependencies))
 
@@ -23,5 +27,5 @@ search_dependencies <- function(packages,
 
   dependencies <- sort(dependencies)
 
-    return(dependencies)
+  return(dependencies)
 }

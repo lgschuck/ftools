@@ -1,5 +1,5 @@
 Package: ftools
-Title: Tools to facilitate working with data in R.
+Title: Tools to facilitate working with data in R
 Version: 0.1.0.9000
 Authors@R: 
     person("Luís Gustavo", "Schuck", email="luisgustavoschuck@yahoo.com.br",  

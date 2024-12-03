@@ -1,11 +1,11 @@
 #' Function for write messages in text file
 #' @export write_log
 #'
-#' @param file log file
 #' @param message message to be saved in the log file
+#' @param file log file
 #'
 #' @examples
-#'
+#' setwd(tempdir())
 #' write_log('A Simple Test.', file = 'log_file.txt')
 #' readLines('log_file.txt')
 #'

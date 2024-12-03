@@ -6,15 +6,35 @@
 \usage{
 session_info(
   r_version = getRversion(),
-  system = osVersion,
+  system = paste(c(Sys.info()["sysname"], Sys.info()["release"], "-",
+    Sys.info()["version"]), collapse = " "),
   user = Sys.getenv("USERNAME"),
   machine = Sys.getenv("COMPUTERNAME"),
   time = format(Sys.time(), "\%Y/\%m/\%d - \%X"),
   libs = .libPaths(),
   env_obj = ls(all.names = T, envir = globalenv()),
-  header = paste0("\\n", paste0(rep("=", 60), collapse = ""), "\\n"),
+  sep = paste0("\\n", paste0(rep("=", 60), collapse = ""), "\\n"),
   limit = 12
 )
+}
+\arguments{
+\item{r_version}{R version}
+
+\item{system}{OS}
+
+\item{user}{User name}
+
+\item{machine}{Computer name}
+
+\item{time}{time}
+
+\item{libs}{Libs folder}
+
+\item{env_obj}{Objects in the environment}
+
+\item{sep}{Separator}
+
+\item{limit}{position to start text next to the parameters}
 }
 \description{
 Function for info about current R session

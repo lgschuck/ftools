@@ -16,8 +16,10 @@ Function for difference between dates
 }
 \examples{
 
-dif_month(as.Date('2022-12-15'),as.Date('2022-03-15'))
+dif_month(as.Date('2022-12-15'), as.Date('2022-03-15')) # return 9
 
-dif_month(as.Date('2022-12-15'),as.Date('2023-03-15'))
+dif_month(as.Date('2022-12-15'), as.Date('2023-03-15')) # return -3
+
+dif_month('2022-12-15' |> as.POSIXct(), as.Date('2023-03-15')) # return -3
 
 }

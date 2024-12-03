@@ -16,6 +16,7 @@ Function for get dependencies recursively, excluding R base packages.
 }
 \examples{
 
+options(repos = c(CRAN = 'https://cran.rstudio.com/'))
 search_dependencies(c('dplyr', 'shiny', 'data.table'))
 
 }
