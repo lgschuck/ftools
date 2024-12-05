@@ -6,7 +6,7 @@
 #' @param dataset dataset for analysis
 #'
 #' @examples
-#' dataviz(mtcars)
+#' if(FALSE) dataviz(mtcars)
 #'
 #' @export
 #'
