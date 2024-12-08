@@ -13,6 +13,6 @@ dataviz(dataset)
 Function that generates App in Shiny for analysis of input dataset
 }
 \examples{
-if(FALSE) dataviz(mtcars)
+if(interactive()) dataviz(mtcars)
 
 }
