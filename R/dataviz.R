@@ -42,23 +42,18 @@ dataviz <- function(dataset){
       theme = "primary"
     ),
     value_box(
-      title = "Rows",
-      value = nrow(dataset) |> format(big.mark = ','),
+      title = "Rows / Columns",
+      value = paste(nrow(dataset) |> format(big.mark = ','),
+                    '/', ncol(dataset) |> format(big.mark = ',')) ,
       showcase = bs_icon("layout-text-sidebar-reverse"),
       theme = "primary"
     ),
     value_box(
-      title = "Columns",
-      value = ncol(dataset) |> format(big.mark = ','),
-      showcase = bs_icon("layout-three-columns"),
+      title = "Columns with NA's",
+      value = sum(colSums(is.na(dataset)) > 0),
+      showcase = bs_icon("database-x"),
       theme = "primary"
     ),
-    # value_box(
-    #   title = "Columns with NA's",
-    #   value = sum(colSums(is.na(dataset)) > 0),
-    #   showcase = bs_icon("question-circle"),
-    #   theme = "primary"
-    # ),
     value_box(
       title = "Size (MB)",
       value = (object.size(dataset)/1e6) |> as.numeric() |> round(2),
@@ -85,8 +80,8 @@ dataviz <- function(dataset){
               useBusyIndicators(),
               main_box_values,
               card(full_screen = T, height = '625px',
-                    card_header(class = "bg-primary", "Variables"),
-                    card_body(DTOutput('summary_t1'))
+                   card_header(class = "bg-primary", "Variables"),
+                   card_body(DTOutput('summary_t1'))
               ),
     ),
 
@@ -94,36 +89,36 @@ dataviz <- function(dataset){
     nav_panel("Numemic", icon = bs_icon("bar-chart-fill"),
       main_box_values,
       card(full_screen = T, card_body(
-      layout_columns(col_widths = c(2, 7, 3), #row_heights = 600,
-         card(card_header('Parameters', class = "bg-primary"),
-              card_body(
-                selectInput('plots_sel_vars', 'Variable', choices = var_num),
-                selectInput('plots_sel_vars2', 'Variable 2', choices = var_num),
-                numericInput('plots_percentile', 'Percentile',
-                             value = 50, min = 0, max = 100, step = 5),
-                checkboxInput('plots_outliers', 'Remove Outliers', value = F)
-              )),
-         navset_card_tab(#height = 600,
-           full_screen = T,
-           nav_panel("Histogram", full_screen = T,
-                     card_body(plotOutput('plots_g1')),
-                     card_footer(numericInput('plots_bins', 'Bins',
-                                              value = 10, min = 5, step = 5),)),
-           nav_panel("Boxplot", full_screen = T,
-                     card_body(plotOutput('plots_g2'))),
-           nav_panel("Scatter", full_screen = T,
-                     card_body(plotOutput('plots_g3')),
-                     card_footer(checkboxInput('plots_scatter_lm', 'Linear Model', value = F))
+        layout_columns(col_widths = c(2, 7, 3), #row_heights = 600,
+           card(card_header('Parameters', class = "bg-primary"),
+                card_body(
+                  selectInput('plots_sel_vars', 'Variable', choices = var_num),
+                  selectInput('plots_sel_vars2', 'Variable 2', choices = var_num),
+                  numericInput('plots_percentile', 'Percentile',
+                               value = 50, min = 0, max = 100, step = 5),
+                  checkboxInput('plots_outliers', 'Remove Outliers', value = F)
+                )),
+           navset_card_tab(#height = 600,
+             full_screen = T,
+             nav_panel("Histogram", full_screen = T,
+                       card_body(plotOutput('plots_g1')),
+                       card_footer(numericInput('plots_bins', 'Bins',
+                                                value = 10, min = 5, step = 5),)),
+             nav_panel("Boxplot", full_screen = T,
+                       card_body(plotOutput('plots_g2'))),
+             nav_panel("Scatter", full_screen = T,
+                       card_body(plotOutput('plots_g3')),
+                       card_footer(checkboxInput('plots_scatter_lm', 'Linear Model', value = F))
+             ),
+             nav_panel("Linear Model", full_screen = T,
+                       verbatimTextOutput("plots_linear_model")),
            ),
-           nav_panel("Linear Model", full_screen = T,
-                     verbatimTextOutput("plots_linear_model")),
-         ),
-         card(full_screen = T,
-              card_header('Statistics', class = "bg-primary"),
-              card_body(DTOutput('plots_t1')),
-              card_footer(numericInput('plots_digits', 'Digits',
-                                       value = 2, min = 0, max = 9, step = 1)))
-      ))),
+           card(full_screen = T,
+                card_header('Statistics', class = "bg-primary"),
+                card_body(DTOutput('plots_t1')),
+                card_footer(numericInput('plots_digits', 'Digits',
+                                         value = 2, min = 0, max = 9, step = 1)))
+        ))),
     ),
 
     # page exit ---------------------------------------------------------------
