@@ -2,6 +2,7 @@
 
 export(dataviz)
 export(dif_month)
+export(f_num)
 export(fina)
 export(lana)
 export(mana)
@@ -24,6 +25,7 @@ import(bslib)
 import(data.table)
 import(shiny, except = c(dataTableOutput, renderDataTable))
 
+importFrom(data.table,fcase)
 importFrom(dplyr,filter)
 importFrom(dplyr,mutate)
 importFrom(dplyr,pull)
