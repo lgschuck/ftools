@@ -17,11 +17,11 @@ fina(x, n = 1L, na_rm = T)
 If all values are NA returns NA
 }
 \examples{
-fina(c(5, 1, 2, 3, NA)) # returns 5
-fina(c(5, 1, 2, 3, NA), n = 2) # returns 1
-fina(c(NA, 1, 2, 3, NA), na_rm = T) # returns 1
-fina(c(NA, 1, 2, 3, NA), na_rm = F) # returns NA
-fina(c(NA, NA, NA), na_rm = T) # returns NA
-fina(c(NA, NA, NA), na_rm = F) # returns NA
+fina(c(5, 1, 2, 3, NA))
+fina(c(5, 1, 2, 3, NA), n = 2)
+fina(c(NA, 1, 2, 3, NA), na_rm = TRUE)
+fina(c(NA, 1, 2, 3, NA), na_rm = FALSE)
+fina(c(NA, NA, NA), na_rm = TRUE)
+fina(c(NA, NA, NA), na_rm = FALSE)
 
 }

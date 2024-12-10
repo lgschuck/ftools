@@ -15,7 +15,7 @@ suna(x, na_rm = T)
 Sum taking NA's into account
 }
 \examples{
-suna(c(1, 2, 3, NA)) # returns 6
-suna(c(1, 2, 3, NA), sem_na = F) # returns NA
+suna(c(1, 2, 3, NA))
+suna(c(1, 2, 3, NA), na_rm = F)
 
 }

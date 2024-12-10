@@ -7,12 +7,12 @@
 #' @param n Position to return, default is 1 (first). If zero or less it will be corrected to 1
 #' @param na_rm If TRUE or T will remove NA's. Default value is T.
 #' @examples
-#' fina(c(5, 1, 2, 3, NA)) # returns 5
-#' fina(c(5, 1, 2, 3, NA), n = 2) # returns 1
-#' fina(c(NA, 1, 2, 3, NA), na_rm = T) # returns 1
-#' fina(c(NA, 1, 2, 3, NA), na_rm = F) # returns NA
-#' fina(c(NA, NA, NA), na_rm = T) # returns NA
-#' fina(c(NA, NA, NA), na_rm = F) # returns NA
+#' fina(c(5, 1, 2, 3, NA))
+#' fina(c(5, 1, 2, 3, NA), n = 2)
+#' fina(c(NA, 1, 2, 3, NA), na_rm = TRUE)
+#' fina(c(NA, 1, 2, 3, NA), na_rm = FALSE)
+#' fina(c(NA, NA, NA), na_rm = TRUE)
+#' fina(c(NA, NA, NA), na_rm = FALSE)
 #'
 #' @export
 #'

@@ -13,13 +13,15 @@
 #' @rawNamespace import(shiny, except = c(dataTableOutput, renderDataTable))
 #'
 #' @import data.table
-#' @importFrom dplyr select filter mutate pull
+#' @importFrom dplyr arrange filter mutate pull select slice
 #' @import bslib
 #' @import bsicons
 #' @import DT
 #' @importFrom graphics abline hist
 #' @importFrom stats median
 #' @importFrom utils object.size
+#' @importFrom graphics boxplot lines
+#' @importFrom stats cor lm sd var
 
 dataviz <- function(dataset) {
   stopifnot(is.data.frame(dataset))

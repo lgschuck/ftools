@@ -6,9 +6,9 @@
 #' @param x Object with values
 #' @param len Desired length
 #' @examples
-#' zfill('a', 3) # returns '00a'
-#' zfill(1:3, 3) # returns '001', '002', '003'
-#' zfill(c(1, 12, 123)) # returns '001', '012', '123'
+#' zfill('a', 3)
+#' zfill(1:3, 3)
+#' zfill(c(1, 12, 123))
 #'
 #' mtcars |>
 #'   mutate(hp_fill = zfill(hp, 6))

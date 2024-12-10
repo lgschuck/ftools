@@ -4,8 +4,8 @@
 #' @param x Object to be summed
 #' @param na_rm If TRUE or T removes NA's. Default value is T.
 #' @examples
-#' suna(c(1, 2, 3, NA)) # returns 6
-#' suna(c(1, 2, 3, NA), sem_na = F) # returns NA
+#' suna(c(1, 2, 3, NA))
+#' suna(c(1, 2, 3, NA), na_rm = F)
 #'
 #' @export
 #'

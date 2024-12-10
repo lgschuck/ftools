@@ -15,8 +15,8 @@ mina(x, na_rm = T)
 Minimum value taking NA's into account
 }
 \examples{
-mina(c(-1, 2, 3, NA)) # returns -1
-mina(c(1, 2, 3, NA), na_rm = F) # returns NA
-mina(c(1, 2, 3, NA, NaN), na_rm = F) # returns NA
+mina(c(-1, 2, 3, NA))
+mina(c(1, 2, 3, NA), na_rm = F)
+mina(c(1, 2, 3, NA, NaN), na_rm = F)
 
 }
