@@ -11,7 +11,7 @@ f_num(
   thousand = "K",
   million = "M",
   billion = "B",
-  digits = 0
+  dig = 0
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ f_num(
 
 \item{billion}{Abreviation for billions}
 
-\item{digits}{Digits after decimal mark}
+\item{dig}{Digits after decimal mark}
 }
 \description{
 Return is character class
@@ -35,7 +35,7 @@ Return is character class
 \examples{
 f_num(12345678956, billion = 'G')
 f_num(512347896, million = 'Mi')
-f_num(9995198, thousand = 'm', digits = 3, dec = ',', big = '.')
+f_num(9995198, thousand = 'm', dig = 3, dec = ',', big = '.')
 f_num(55566312345678956, billion = 'G')
 f_num(Inf)
 f_num(-Inf)

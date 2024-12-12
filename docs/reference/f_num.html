@@ -44,7 +44,7 @@
 <span>  thousand <span class="op">=</span> <span class="st">"K"</span>,</span>
 <span>  million <span class="op">=</span> <span class="st">"M"</span>,</span>
 <span>  billion <span class="op">=</span> <span class="st">"B"</span>,</span>
-<span>  digits <span class="op">=</span> <span class="fl">0</span></span>
+<span>  dig <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -76,7 +76,7 @@
 <dd><p>Abreviation for billions</p></dd>
 
 
-<dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
+<dt id="arg-dig">dig<a class="anchor" aria-label="anchor" href="#arg-dig"></a></dt>
 <dd><p>Digits after decimal mark</p></dd>
 
 </dl></div>
@@ -87,7 +87,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "12 G"</span>
 <span class="r-in"><span><span class="fu">f_num</span><span class="op">(</span><span class="fl">512347896</span>, million <span class="op">=</span> <span class="st">'Mi'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "512 Mi"</span>
-<span class="r-in"><span><span class="fu">f_num</span><span class="op">(</span><span class="fl">9995198</span>, thousand <span class="op">=</span> <span class="st">'m'</span>, digits <span class="op">=</span> <span class="fl">3</span>, dec <span class="op">=</span> <span class="st">','</span>, big <span class="op">=</span> <span class="st">'.'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">f_num</span><span class="op">(</span><span class="fl">9995198</span>, thousand <span class="op">=</span> <span class="st">'m'</span>, dig <span class="op">=</span> <span class="fl">3</span>, dec <span class="op">=</span> <span class="st">','</span>, big <span class="op">=</span> <span class="st">'.'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "9,995 M"</span>
 <span class="r-in"><span><span class="fu">f_num</span><span class="op">(</span><span class="fl">55566312345678956</span>, billion <span class="op">=</span> <span class="st">'G'</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "55,566,312 G"</span>
