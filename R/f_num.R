@@ -36,6 +36,6 @@ f_num <- function(x, big = ',', dec = '.', thousand = 'K',
     x > 1e3,
     paste(format(round(x/1e3, digits = dig),
                  decimal.mark = dec, big.mark = big, scientific = F), thousand),
-    default = paste(x)
+    default = format(round(x, dig), scientific = F)
     )
 }

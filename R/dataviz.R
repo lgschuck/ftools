@@ -191,19 +191,27 @@ dataviz <- function(dataset) {
               full_screen = T,
               nav_panel('Parameters',
                         selectInput('num_sel_vars', 'Variable', var_num_names),
-                        selectInput('num_sel_vars2', 'Variable 2', var_num_names, var_num_names[2]),
-                        numericInput('num_var_percentile', 'Percentile', 50, 0, 100, 5)),
+                        selectInput('num_sel_vars2', 'Variable 2', var_num_names, var_num_names[2])),
               nav_panel('Filters', checkboxInput('num_outliers', 'Remove Outliers', F))
             ),
             navset_card_tab(
               full_screen = T,
               nav_panel(
-                'Histogram',
+                'Distribution',
                 full_screen = T,
-                card_body(plotOutput('num_g_hist')),
-                card_footer(numericInput('num_bins', 'Bins', 10, 5, step = 10))
+                card_body(plotOutput('num_g_dist')),
+                card_footer(
+                  layout_column_wrap(
+                    radioButtons('num_radio_dist_plot', 'Plot type:',
+                                 c('Dots' = 'dots',
+                                   'Histogram' = 'hist',
+                                   'Boxplot' = 'boxplot'), inline = T),
+                    numericInput('num_var_percentile', 'Percentile', 50, 0, 100, 5),
+                    numericInput('num_bins', 'Bins', 10, 5, step = 10) |>
+                      tooltip('Only for Histrograms')
+                  )
+                )
               ),
-              nav_panel('Boxplot', full_screen = T, card_body(plotOutput('num_g_boxplot'))),
               nav_panel(
                 'Scatter',
                 full_screen = T,
@@ -224,20 +232,27 @@ dataviz <- function(dataset) {
                     actionButton('num_btn_scatter_lm_run', 'Run Linear Model', icon('gear')),
                     actionButton('num_btn_scatter_lm_clear', 'Clear Linear Model', icon('x'))),
                   nav_panel('Output', verbatimTextOutput('num_linear_model')),
-                  nav_panel('Residuals',
-                            plotOutput('num_g_lm_resid'),
-                            radioButtons('num_radio_lm_resid', 'Plot type:',
-                                         c('Histogram' = 'hist',
-                                           'Boxplot' = 'boxplot',
-                                           'Dots' = 'dots'), inline = T),
-                            actionButton('num_btn_lm_resid', 'Plot residuals')),
+                  nav_panel(
+                    'Residuals',
+                    plotOutput('num_g_lm_resid'),
+                    card_footer(
+                      layout_column_wrap(
+                        radioButtons('num_radio_lm_resid', 'Plot type:',
+                                     c('Dots' = 'dots',
+                                       'Histogram' = 'hist',
+                                       'Boxplot' = 'boxplot'), inline = T),
+                        actionButton('num_btn_lm_resid', 'Plot residuals'))
+                    )
+                  ),
                 )),
             ),
-            card(
-              full_screen = T,
-              card_header('Statistics', class = 'bg-primary'),
-              card_body(DTOutput('num_t1')),
-              card_footer(numericInput('num_t1_digits', 'Digits', 2, 0, 9, 1))
+            navset_card_tab(
+              nav_panel(
+                'Stats',
+                full_screen = T,
+                card_body(DTOutput('num_t1')),
+                card_footer(numericInput('num_t1_digits', 'Digits', 2, 0, 9, 1))
+              )
             )
           )
         )
@@ -352,7 +367,7 @@ dataviz <- function(dataset) {
     )
 
     output$summary_max_value <- renderText(
-      summary_t1() |> arrange(-max) |> head(1) |> pull(max) |> f_num()
+      summary_t1() |> arrange(-max) |> head(1) |> pull(max) |> f_num(dig = 3)
     )
 
     output$summary_var_min_value <- renderText(
@@ -360,7 +375,7 @@ dataviz <- function(dataset) {
     )
 
     output$summary_min_value <- renderText(
-      summary_t1() |> arrange(min) |> head(1) |> pull(min) |> f_num()
+      summary_t1() |> arrange(min) |> head(1) |> pull(min) |> f_num(dig = 3)
     )
 
     output$summary_var_biggest_size <- renderText(
@@ -368,7 +383,7 @@ dataviz <- function(dataset) {
     )
 
     output$summary_var_biggest_size_size <- renderText(
-      summary_t1() |> arrange(-size) |> head(1) |> pull(size)
+      summary_t1() |> arrange(-size) |> head(1) |> pull(size) |> round(2)
     )
     # numeric page events -----------------------------------------------------
     # df to plots page --------------------------------------------------------
@@ -395,26 +410,28 @@ dataviz <- function(dataset) {
     num_var_percentile <- reactive(pn(num_var(), input$num_var_percentile / 100))
 
     # render histogram --------------------------------------------------------
-    output$num_g_hist <- renderPlot({
-      req(input$num_sel_vars)
-      hist(
-        num_var(),
-        col = 'steelblue2',
-        breaks = input$num_bins,
-        main = '',
-        xlab = '',
-        ylab = 'Count'
-      )
-      abline(v = num_var_percentile(), col = 'red')
-    }) |> bindCache(num_var(), input$num_bins, input$num_var_percentile)
-    # render boxplot ----------------------------------------------------------
-    output$num_g_boxplot <- renderPlot({
-      boxplot(num_var(),
-              horizontal = T,
-              col = 'steelblue2')
-      abline(v = num_var_percentile(), col = 'red')
-    }) |> bindCache(num_var(), input$num_var_percentile)
-
+    output$num_g_dist <- renderPlot({
+      if(input$num_radio_dist_plot == 'hist'){
+        hist(
+          num_var(),
+          col = 'steelblue2',
+          breaks = input$num_bins,
+          main = '',
+          xlab = '',
+          ylab = 'Count'
+        )
+        abline(v = num_var_percentile(), col = 'brown3')
+      } else if (input$num_radio_dist_plot == 'boxplot'){
+        boxplot(num_var(),
+                horizontal = T, col = 'steelblue2')
+        abline(v = num_var_percentile(), col = 'brown3')
+      } else if (input$num_radio_dist_plot == 'dots'){
+        plot(num_var(), col = 'steelblue2',
+             ylab = 'Values')
+        abline(h = num_var_percentile(), col = 'brown3')
+      }
+    }) |> bindCache(num_var(), input$num_radio_dist_plot, input$num_bins,
+                    input$num_var_percentile)
     # render scatter plot -----------------------------------------------------
     output$num_g_scatter <- renderPlot({
       if (input$num_scatter_lm &
@@ -521,7 +538,7 @@ dataviz <- function(dataset) {
                     num_linear_model$x_name,
                     num_linear_model$model)
 
-    # pplot linear model residuals --------------------------------------------
+    # plot linear model residuals ---------------------------------------------
     output$num_g_lm_resid <- renderPlot({
 
       if(!isTruthy(num_linear_model$model)){
@@ -539,31 +556,10 @@ dataviz <- function(dataset) {
         } else if (input$num_radio_lm_resid == 'dots'){
           plot(num_linear_model$model$residuals, col = 'steelblue2',
                ylab = 'Residuals')
+          abline(h = 0, col = 'brown3', lty = 'dotdash')
         }
       }
     }) |> bindEvent(input$num_btn_lm_resid)
-
-    output$num_g_lm_resid <- renderPlot({
-
-      if(!isTruthy(num_linear_model$model)){
-        showNotification('Create an Lm model', type = 'message')
-      } else {
-        if(input$num_radio_lm_resid == 'hist'){
-          hist(num_linear_model$model$residuals,
-               col = 'steelblue2',
-               main = '',
-               xlab = '',
-               ylab = 'Count')
-        } else if (input$num_radio_lm_resid == 'boxplot'){
-          boxplot(num_linear_model$model$residuals,
-                  horizontal = T, col = 'steelblue2')
-        } else if (input$num_radio_lm_resid == 'dots'){
-          plot(num_linear_model$model$residuals, col = 'steelblue2',
-               ylab = 'Residuals')
-        }
-      }
-    }) |> bindEvent(input$num_btn_lm_resid)
-
 
     # metrics -----------------------------------------------------------------
     num_stats_obs <- reactive(length(num_var()))
