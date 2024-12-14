@@ -772,7 +772,9 @@ dataviz <- function(dataset) {
     )
 
     observe({
-      if (input$pA_sel_vars == input$pA_sel_vars2) {
+      if(!is.numeric(pA_var())){
+        showNotification('The Dependent variable must be numeric', duration = 2.5, type = 'message')
+      } else if (input$pA_sel_vars == input$pA_sel_vars2) {
         showNotification('Choose diferent variables for X and Y.',
                          duration = 2.5,
                          type = 'message')
