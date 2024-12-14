@@ -19,8 +19,8 @@
 #' @import DT
 #' @importFrom graphics abline hist
 #' @importFrom stats median
-#' @importFrom utils object.size
-#' @importFrom graphics boxplot lines
+#' @importFrom utils object.size head
+#' @importFrom graphics boxplot lines barplot mtext text
 #' @importFrom stats cor lm sd var
 
 dataviz <- function(dataset) {
@@ -31,7 +31,7 @@ dataviz <- function(dataset) {
   # ds_names <- names(dataset[, sapply(dataset, is.numeric), with = FALSE])
   ds_names <- names(dataset)
 
-  empty_plot <- function(msg = 'No plot', c = 2){
+  fn_empty_plot <- function(msg = 'No plot', c = 2){
     plot(1:10, 1:10, type = 'n', xlab = '', ylab = '')
     text(5, 5, msg, cex = c)
   }
@@ -71,6 +71,9 @@ dataviz <- function(dataset) {
     )
   )
 
+  ### -------------------------------------------------------------------------
+  # UI
+  ### -------------------------------------------------------------------------
   ui <- page_navbar(
     id = 'navbar',
     theme = bs_theme(
@@ -96,14 +99,14 @@ dataviz <- function(dataset) {
         uiOutput('pS_value_box'),
         height = '100px'
       ),
-      card(
+      card(full_screen = T,
         card_body(
           style = 'background-color: #02517d;',
           navset_card_tab(
             height = '800px',
             full_screen = T,
             nav_panel(
-              'Highlights', full_screen = T,
+              'Highlights',
               card_body(
                 layout_column_wrap(
                   value_box(
@@ -170,8 +173,15 @@ dataviz <- function(dataset) {
                 )
               )
             ),
-            nav_panel('Variables', full_screen = T, card_body(DTOutput('pS_t1'))),
-            
+            nav_panel('Variables', card_body(DTOutput('pS_t1'))),
+            nav_panel(
+              'Overview',
+              card_body(
+                radioButtons('pS_over_radio_sample', NULL,
+                             c('First 100' = 'first', 'Sample 100' = 'sample'),
+                             inline = T),
+                DTOutput('pS_t2'))
+            ),
           )
         )
       )
@@ -187,24 +197,63 @@ dataviz <- function(dataset) {
         uiOutput('pE_value_box'),
         height = '100px'
       ),
-      card(
-        full_screen = T,
-        card_body(
-          style = 'background-color: #02517d;',
-          layout_columns(
-            # col_widths = c(2, 7, 3),
-            height = '800px',
-            navset_card_tab(
-              full_screen = T,
-              nav_panel(
-                'Filter', full_screen = T,
-                card_body(
-                  selectInput('pE_transform_sel_vars', 'Variable', ds_names),
-                  selectInput('pE_transform_operator', 'Operator', 
-                              c('==', '>', '>=', '<', '<=', '!=', 'is.na', 'not.na')),
-                  textInput('pE_transform_value', 'Value'),
-                  actionButton('pE_btn_transform_apply', 'Apply filters', icon('check'))))),
-      )))
+      card(full_screen = T,
+           card_body(
+             style = 'background-color: #02517d;',
+             layout_columns(
+               height = '800px',
+               navset_card_tab(
+                 #full_screen = T,
+                 nav_panel(
+                   'Filter',
+                   layout_column_wrap(
+                    card(
+                      card_header('Filter Rows', class = "bg-primary"),
+                      card_body(
+                      uiOutput('pE_filter_ui_var_filter'),
+                      selectInput(
+                        'pE_filter_operator',
+                        'Operator',
+                        c('== (Equal)' = '==',
+                          '!= (Different)' = '!=',
+                          '> (Greater)' = '>',
+                          '>= (Greater or Equal)' = '>=',
+                          '< (Less)' = '<',
+                          '<= (Less or Equal)' = '<=',
+                          'Is NA' = 'is.na',
+                          'Not NA' = 'not.na')
+                      ),
+                      textInput('pE_filter_value', 'Value') |>
+                        tooltip('Text must in quotes'),
+                        actionButton('pE_filter_btn_filter', 'Apply filters', icon('check')),
+                      )
+                    ),
+                    card(
+                      card_header('Select Columns', class = "bg-primary"),
+                      card_body(
+                        uiOutput('pE_filter_ui_var_sel'),
+                        radioButtons('pE_filter_radio_var_sel', NULL,
+                                     c('Keep' = 'keep',
+                                       'Drop' = 'drop'), inline = T),
+                        actionButton('pE_filter_btn_sel', 'Apply selection', icon('check')))
+                    )
+                  ),
+                  layout_column_wrap(
+                    actionButton('pE_btn_reset', 'Reset Dataset', icon('copy')) |>
+                       tooltip('Restore to original Dataset', placement = 'top')
+                  )
+                ),
+                nav_panel(
+                  'Overview',
+                  card_body(
+                    radioButtons('pE_over_radio_sample', NULL,
+                                 c('First 100' = 'first', 'Sample 100' = 'sample'),
+                                 inline = T),
+                    DTOutput('pE_t1'))),
+              )
+            )
+          )
+        )
     ),
 
     # page analysis -----------------------------------------------------------
@@ -227,11 +276,11 @@ dataviz <- function(dataset) {
             navset_card_tab(
               full_screen = T,
               nav_panel('Parameters',
-                        selectInput('pA_sel_vars', 'Variable', ds_names),
-                        selectInput('pA_sel_vars2', 'Variable 2', ds_names, ds_names[2])),
+                        uiOutput('pA_ui_var_names'),
+                        uiOutput('pA_ui_var_names2')),
               nav_panel('Filters', checkboxInput('pA_outliers', 'Remove Outliers', F) |>
                           tooltip('Only for numeric vars', placement = 'top'))
-            ),
+              ),
             navset_card_tab(
               full_screen = T,
               nav_panel(
@@ -311,52 +360,59 @@ dataviz <- function(dataset) {
     )
   )
 
+  ### -------------------------------------------------------------------------
+  # Server
+  ### -------------------------------------------------------------------------
   server <- function(input, output, session) {
-    df <- reactiveValues()
+    df <- reactiveValues(
+      df = dataset,
+      df_active = dataset
+    )
 
-    df$df <- dataset
-    df$df_als <- copy(dataset)
+    df_active_names <- reactive(df$df_active |> names())
 
     # main value boxes ---------------------------------------------------------
-    main_value_box <- reactive({
+    fn_main_value_box <- function(df, df_name = 'Original'){
       tagList(
         layout_columns(
           col_widths = c(3, 3, 3, 3),
           value_box(
-            title = 'Dataset Class',
-            value = df$df |> class() |> head(1),
+            title = paste(df_name, 'Dataset Class'),
+            value = df |> class() |> head(1),
             showcase = bs_icon('file-binary'),
             theme = 'primary'
           ),
           value_box(
             title = 'Rows / Columns',
             value = paste(
-              nrow(df$df) |> f_num(dec = '.', big = ','),
+              nrow(df) |> f_num(dec = '.', big = ','),
               '/',
-              ncol(df$df) |> f_num(dec = '.', big = ',')
+              ncol(df) |> f_num(dec = '.', big = ',')
             ),
             showcase = bs_icon('layout-text-sidebar-reverse'),
             theme = 'primary'
           ),
           value_box(
             title = "Columns with NA's",
-            value = sum(colSums(is.na(df$df)) > 0),
+            value = sum(colSums(is.na(df)) > 0),
             showcase = bs_icon("database-x"),
             theme = "primary"
           ),
           value_box(
             title = 'Size (MB)',
-            value = (object.size(df$df) / 2^20) |> as.numeric() |> round(2),
+            value = (object.size(df) / 2^20) |> as.numeric() |> round(2),
             showcase = bs_icon('sd-card'),
             theme = 'primary'
           )
         )
       )
-    })
+    }
 
-    output$pS_value_box <- renderUI({ main_value_box() })
-    output$pE_value_box <- renderUI({ main_value_box() })
-    output$pA_value_box <- renderUI({ main_value_box() })
+    output$pS_value_box <- renderUI({ fn_main_value_box(df$df) })
+
+    main_value_box_active <- reactive(fn_main_value_box(df$df_active, 'Active'))
+    output$pE_value_box <- renderUI({ main_value_box_active() })
+    output$pA_value_box <- renderUI({ main_value_box_active() })
 
     # summary page events -----------------------------------------------------
     pS_t1 <- reactive(
@@ -410,6 +466,26 @@ dataviz <- function(dataset) {
         formatPercentage('perc_nas', digits = 2)
     )
 
+    # overview -----------------------
+    output$pS_t2 <- renderDT(
+      {
+        pS_over_sample_size <- min(100, nrow(df$df))
+        if(input$pS_over_radio_sample == 'first'){
+          pS_over_idx <- 1:pS_over_sample_size
+        } else if (input$pS_over_radio_sample == 'sample'){
+          pS_over_idx <- sample.int(nrow(df$df), pS_over_sample_size, replace = F)
+        }
+
+        df$df[pS_over_idx, ] |>
+          datatable(
+            extensions = 'ColReorder',
+            rownames = F,
+            options = list(dom = 'Bftp', pageLength = 5, colReorder = T)
+        )
+      }
+    )
+
+    # value for boxes -----------------------
     output$pS_var_most_nas <- renderText(
       {
         if(pS_t1() |> filter(n_nas > 0) |> nrow() < 1) { 'None'
@@ -470,16 +546,96 @@ dataviz <- function(dataset) {
       pS_t1() |> arrange(-size) |> head(1) |> pull(size) |> round(2)
     )
 
+    # edit page events -------------------------------------------------------
+    output$pE_filter_ui_var_filter <- renderUI(
+      selectInput('pE_filter_vars_filter', 'Variable', df_active_names())
+    )
 
-    # summary transform tab ---------------------------------------------------
+    output$pE_filter_ui_var_sel <- renderUI(
+      selectInput('pE_filter_vars_sel', 'Variable',
+      df_active_names(), selected = df_active_names()[1], multiple = T)
+    )
+    # filter events ---------------------------
 
+    # filter rows
     observe({
-      showNotification('To be implemented', type = 'message', duration = 3)
-    }) |>  bindEvent(input$pE_btn_transform_apply)
+
+      pE_filter_value_temp <- input$pE_filter_value
+
+      if(df$df_active[[input$pE_filter_vars_filter]] |> is.numeric()) as.numeric(pE_filter_value_temp)
+      if(input$pE_filter_operator == '=='){
+        df$df_active <-
+          df$df_active[get(input$pE_filter_vars_filter) == pE_filter_value_temp, ]
+      } else if(input$pE_filter_operator == '!='){
+        df$df_active <-
+          df$df_active[get(input$pE_filter_vars_filter) != pE_filter_value_temp, ]
+      } else if(input$pE_filter_operator == '>'){
+        df$df_active <-
+          df$df_active[get(input$pE_filter_vars_filter) > pE_filter_value_temp, ]
+      } else if(input$pE_filter_operator == '>='){
+        df$df_active <-
+          df$df_active[get(input$pE_filter_vars_filter) >= input$pE_filter_value, ]
+      } else if(input$pE_filter_operator == '<'){
+        df$df_active <-
+          df$df_active[get(input$pE_filter_vars_filter) < pE_filter_value_temp, ]
+      } else if(input$pE_filter_operator == '<='){
+        df$df_active <-
+          df$df_active[get(input$pE_filter_vars_filter) <= pE_filter_value_temp, ]
+      } else if(input$pE_filter_operator == 'is.na'){
+        df$df_active <-
+          df$df_active[is.na(get(input$pE_filter_vars_filter)), ]
+      } else if(input$pE_filter_operator == 'not.na'){
+        df$df_active <-
+          df$df_active[!is.na(get(input$pE_filter_vars_filter)), ]
+      }
+
+      showNotification('Filter rows: OK', type = 'message', duration = 2)
+    }) |> bindEvent(input$pE_filter_btn_filter)
+
+    # select cols ---------------------------
+    observe({
+      df$df_active <- subset(df$df_active,
+        select = if(input$pE_filter_radio_var_sel == 'keep') {
+          input$pE_filter_vars_sel
+        } else { setdiff(names(df$df_active), input$pE_filter_vars_sel)})
+      showNotification('Select columns: OK', type = 'message', duration = 2)
+    }) |> bindEvent(input$pE_filter_btn_sel)
+    # reset df active ---------------------------
+    observe({
+      df$df_active <- df$df
+      showNotification('Active Dataset Reseted', type = 'message', duration = 2)
+    }) |> bindEvent(input$pE_btn_reset)
+
+    # overview ----------------------------------
+    output$pE_t1 <- renderDT(
+      {
+        pE_over_sample_size <- min(100, nrow(df$df_active))
+        if(input$pE_over_radio_sample == 'first'){
+          pE_over_idx <- 1:pE_over_sample_size
+        } else if (input$pE_over_radio_sample == 'sample'){
+          pE_over_idx <- sample.int(nrow(df$df_active), pE_over_sample_size, replace = F)
+        }
+
+        df$df_active[pE_over_idx, ] |>
+          datatable(
+            extensions = 'ColReorder',
+            rownames = F,
+            options = list(dom = 'Bftp', pageLength = 5, colReorder = T)
+          )
+      }
+    )
 
     # analysis page events ----------------------------------------------------
+    output$pA_ui_var_names <- renderUI(
+      selectInput('pA_sel_vars', 'Variable', df_active_names())
+    )
+
+    output$pA_ui_var_names2 <- renderUI(
+      selectInput('pA_sel_vars2', 'Variable', df_active_names(), df_active_names()[2])
+    )
+
     pA_outliers_index <- reactive({
-      v <- df$df |> pull(input$pA_sel_vars)
+      v <- df$df_active[[input$pA_sel_vars]]
       if(input$pA_outliers & is.numeric(v)) {
         q1 <- p25(v)
         q3 <- p75(v)
@@ -492,13 +648,13 @@ dataviz <- function(dataset) {
 
     # values to analysis page -------------------------------------------------
     pA_var <- reactive({
-      n <- df$df |> pull(input$pA_sel_vars)
-      n[pA_outliers_index()]
+      req(input$pA_sel_vars)
+      df$df_active[[input$pA_sel_vars]][pA_outliers_index()]
     })
 
     pA_var2 <- reactive({
-      n <- df$df |> pull(input$pA_sel_vars2)
-      n[pA_outliers_index()]
+      req(input$pA_sel_vars2)
+      df$df_active[[input$pA_sel_vars2]][pA_outliers_index()]
     })
 
     pA_var_percentile <- reactive(
@@ -511,7 +667,7 @@ dataviz <- function(dataset) {
     output$pA_g_dist <- renderPlot({
       if(input$pA_radio_dist_plot == 'hist'){
         if(!is.numeric(pA_var())){
-          empty_plot('Value must be numeric')
+          fn_empty_plot('Value must be numeric')
         } else {
           hist(pA_var(),
                col = 'steelblue2',
@@ -523,14 +679,14 @@ dataviz <- function(dataset) {
         }
       } else if (input$pA_radio_dist_plot == 'boxplot'){
         if(!is.numeric(pA_var())){
-          empty_plot('Value must be numeric')
+          fn_empty_plot('Value must be numeric')
         } else {
           boxplot(pA_var(), horizontal = T, col = 'steelblue2')
           abline(v = pA_var_percentile(), col = 'brown3')
         }
       } else if (input$pA_radio_dist_plot == 'dots'){
         if(!is.numeric(pA_var())){
-          empty_plot('Value must be numeric')
+          fn_empty_plot('Value must be numeric')
         } else {
           plot(pA_var(), col = 'steelblue2', ylab = 'Values')
           abline(h = pA_var_percentile(), col = 'brown3')
@@ -539,7 +695,7 @@ dataviz <- function(dataset) {
         if(!is.numeric(pA_var())){
           barplot(table(pA_var()), col = 'steelblue2')
         } else {
-          empty_plot('Value can not be numeric')
+          fn_empty_plot('Value can not be numeric')
         }
       }
     }) |> bindCache(pA_var(), input$pA_radio_dist_plot, input$pA_bins,
@@ -614,7 +770,7 @@ dataviz <- function(dataset) {
           var_x <- pA_var2()
         } else {
           pA_sample_size <- min(pA_var_size,
-                                 floor(pA_var_size * min(1, max(0, input$pA_sample_size/100))))
+                                floor(pA_var_size * min(1, max(0, input$pA_sample_size/100))))
           lm_sample <- sample.int(pA_var_size, pA_sample_size, replace = F) |>
             sort()
           var_y <- pA_var()[lm_sample]
@@ -655,7 +811,7 @@ dataviz <- function(dataset) {
     output$pA_g_lm_resid <- renderPlot({
 
       if(!isTruthy(pA_linear_model$model)){
-        empty_plot('No residuals to plot')
+        fn_empty_plot('No residuals to plot')
       } else {
         if(input$pA_radio_lm_resid == 'hist'){
           hist(pA_linear_model$model$residuals,
@@ -733,11 +889,11 @@ dataviz <- function(dataset) {
     ))
 
     output$pA_t1 <- renderDT(pA_t1() |>
-                                formatCurrency(
-                                  'value',
-                                  digits = input$pA_t1_digits,
-                                  currency = ''
-                                ))
+                               formatCurrency(
+                                 'value',
+                                 digits = input$pA_t1_digits,
+                                 currency = ''
+                               ))
 
     # exit app event ----------------------------------------------------------
     observe({

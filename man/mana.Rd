@@ -4,7 +4,7 @@
 \alias{mana}
 \title{Maximum value taking NA's into account}
 \usage{
-mana(x, na_rm = T)
+mana(x, na_rm = TRUE)
 }
 \arguments{
 \item{x}{Object with values}
@@ -16,7 +16,7 @@ Maximum value taking NA's into account
 }
 \examples{
 mana(c(-1, 2, 3, NA))
-mana(c(1, 2, 3, NA), na_rm = F)
-mana(c(1, 2, 3, NA, NaN), na_rm = F)
+mana(c(1, 2, 3, NA), na_rm = FALSE)
+mana(c(1, 2, 3, NA, NaN), na_rm = FALSE)
 
 }

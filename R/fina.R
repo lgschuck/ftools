@@ -16,7 +16,7 @@
 #'
 #' @export
 #'
-fina <- function(x, n = 1L, na_rm = T){
+fina <- function(x, n = 1L, na_rm = TRUE){
 
   if(all(is.na(x))){
     NA

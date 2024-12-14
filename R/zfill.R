@@ -10,16 +10,15 @@
 #' zfill(1:3, 3)
 #' zfill(c(1, 12, 123))
 #'
-#' mtcars |>
-#'   mutate(hp_fill = zfill(hp, 6))
+#' mtcars$hp_fill <- zfill(mtcars$hp, 6)
 #'
 #' # Mind cientific notation
 #'
 #' options(scipen = 0)
-#' 1e6 |> zfill(largura = 9) # return "00001e+06"
+#' 1e6 |> zfill(len = 9) # return "00001e+06"
 #'
 #' options(scipen = 999)
-#' 1e6 |> zfill(largura = 9) # return "001000000"
+#' 1e6 |> zfill(len = 9) # return "001000000"
 #'
 #' @export
 #'

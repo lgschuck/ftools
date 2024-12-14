@@ -4,7 +4,7 @@
 \alias{fina}
 \title{First n value taking NA's into account}
 \usage{
-fina(x, n = 1L, na_rm = T)
+fina(x, n = 1L, na_rm = TRUE)
 }
 \arguments{
 \item{x}{Objeto com valores}

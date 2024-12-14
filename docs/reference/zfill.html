@@ -62,19 +62,17 @@
 <span class="r-in"><span><span class="fu">zfill</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">12</span>, <span class="fl">123</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "001" "012" "123"</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">mtcars</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">mutate</span><span class="op">(</span>hp_fill <span class="op">=</span> <span class="fu">zfill</span><span class="op">(</span><span class="va">hp</span>, <span class="fl">6</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in mutate(mtcars, hp_fill = zfill(hp, 6)):</span> could not find function "mutate"</span>
+<span class="r-in"><span><span class="va">mtcars</span><span class="op">$</span><span class="va">hp_fill</span> <span class="op">&lt;-</span> <span class="fu">zfill</span><span class="op">(</span><span class="va">mtcars</span><span class="op">$</span><span class="va">hp</span>, <span class="fl">6</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Mind cientific notation</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>scipen <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fl">1e6</span> <span class="op">|&gt;</span> <span class="fu">zfill</span><span class="op">(</span>largura <span class="op">=</span> <span class="fl">9</span><span class="op">)</span> <span class="co"># return "00001e+06"</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in zfill(1000000, largura = 9):</span> unused argument (largura = 9)</span>
+<span class="r-in"><span><span class="fl">1e6</span> <span class="op">|&gt;</span> <span class="fu">zfill</span><span class="op">(</span>len <span class="op">=</span> <span class="fl">9</span><span class="op">)</span> <span class="co"># return "00001e+06"</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "00001e+06"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>scipen <span class="op">=</span> <span class="fl">999</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fl">1e6</span> <span class="op">|&gt;</span> <span class="fu">zfill</span><span class="op">(</span>largura <span class="op">=</span> <span class="fl">9</span><span class="op">)</span> <span class="co"># return "001000000"</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in zfill(1000000, largura = 9):</span> unused argument (largura = 9)</span>
+<span class="r-in"><span><span class="fl">1e6</span> <span class="op">|&gt;</span> <span class="fu">zfill</span><span class="op">(</span>len <span class="op">=</span> <span class="fl">9</span><span class="op">)</span> <span class="co"># return "001000000"</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "001000000"</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

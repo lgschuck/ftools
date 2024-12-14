@@ -4,7 +4,7 @@
 \alias{mina}
 \title{Minimum value taking NA's into account}
 \usage{
-mina(x, na_rm = T)
+mina(x, na_rm = TRUE)
 }
 \arguments{
 \item{x}{Object with values}
@@ -16,7 +16,7 @@ Minimum value taking NA's into account
 }
 \examples{
 mina(c(-1, 2, 3, NA))
-mina(c(1, 2, 3, NA), na_rm = F)
-mina(c(1, 2, 3, NA, NaN), na_rm = F)
+mina(c(1, 2, 3, NA), na_rm = FALSE)
+mina(c(1, 2, 3, NA, NaN), na_rm = FALSE)
 
 }

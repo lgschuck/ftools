@@ -4,7 +4,7 @@
 \alias{suna}
 \title{Sum taking NA's into account}
 \usage{
-suna(x, na_rm = T)
+suna(x, na_rm = TRUE)
 }
 \arguments{
 \item{x}{Object to be summed}
@@ -16,6 +16,6 @@ Sum taking NA's into account
 }
 \examples{
 suna(c(1, 2, 3, NA))
-suna(c(1, 2, 3, NA), na_rm = F)
+suna(c(1, 2, 3, NA), na_rm = FALSE)
 
 }

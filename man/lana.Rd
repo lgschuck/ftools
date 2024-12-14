@@ -4,7 +4,7 @@
 \alias{lana}
 \title{Last n value taking NA's into account}
 \usage{
-lana(x, n = 1, na_rm = T)
+lana(x, n = 1, na_rm = TRUE)
 }
 \arguments{
 \item{x}{Object with values}
@@ -18,10 +18,10 @@ If all values are NA returns NA
 }
 \examples{
 lana(c(5, 1, 2, 3, NA))
-lana(c(NA, 1, 2, 3, NA), na_rm = F)
+lana(c(NA, 1, 2, 3, NA), na_rm = FALSE)
 lana(c(5, 1, 2, 3, NA), n = 3)
 lana(c(5, 1, 2, 3, NA), n = 3)
-lana(c(NA, NA, NA), na_rm = T)
-lana(c(NA, NA, NA), na_rm = F)
+lana(c(NA, NA, NA), na_rm = TRUE)
+lana(c(NA, NA, NA), na_rm = FALSE)
 
 }
