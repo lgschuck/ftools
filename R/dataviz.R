@@ -28,9 +28,6 @@ dataviz <- function(dataset) {
   dataset_classes <- class(dataset)
   setDT(dataset)
 
-  # ds_names <- names(dataset[, sapply(dataset, is.numeric), with = FALSE])
-  ds_names <- names(dataset)
-
   fn_empty_plot <- function(msg = 'No plot', c = 2){
     plot(1:10, 1:10, type = 'n', xlab = '', ylab = '')
     text(5, 5, msg, cex = c)
@@ -38,38 +35,6 @@ dataviz <- function(dataset) {
 
   # close browser tab
   js_exit <- "Shiny.addCustomMessageHandler('closeWindow', function(m) {window.close();});"
-
-  main_value_box <- layout_columns(
-    col_widths = c(3, 3, 3, 3),
-    value_box(
-      title = 'Dataset Class',
-      value = dataset_classes[1],
-      showcase = bs_icon('file-binary'),
-      theme = 'primary'
-    ),
-    value_box(
-      title = 'Rows / Columns',
-      value = paste(
-        nrow(dataset) |> f_num(dec = '.', big = ','),
-        '/',
-        ncol(dataset) |> f_num(dec = '.', big = ',')
-      ),
-      showcase = bs_icon('layout-text-sidebar-reverse'),
-      theme = 'primary'
-    ),
-    value_box(
-      title = "Columns with NA's",
-      value = sum(colSums(is.na(dataset)) > 0),
-      showcase = bs_icon("database-x"),
-      theme = "primary"
-    ),
-    value_box(
-      title = 'Size (MB)',
-      value = (object.size(dataset) / 2^20) |> as.numeric() |> round(2),
-      showcase = bs_icon('sd-card'),
-      theme = 'primary'
-    )
-  )
 
   ### -------------------------------------------------------------------------
   # UI
@@ -366,19 +331,19 @@ dataviz <- function(dataset) {
   server <- function(input, output, session) {
     df <- reactiveValues(
       df = dataset,
-      df_active = dataset
+      df_active = dataset,
+      df_classes = dataset_classes
     )
-
     df_active_names <- reactive(df$df_active |> names())
 
     # main value boxes ---------------------------------------------------------
-    fn_main_value_box <- function(df, df_name = 'Original'){
+    fn_main_value_box <- function(df, df_name = 'Original', df_classes = class(df)){
       tagList(
         layout_columns(
           col_widths = c(3, 3, 3, 3),
           value_box(
             title = paste(df_name, 'Dataset Class'),
-            value = df |> class() |> head(1),
+            value = df_classes |> head(1),
             showcase = bs_icon('file-binary'),
             theme = 'primary'
           ),
@@ -408,7 +373,7 @@ dataviz <- function(dataset) {
       )
     }
 
-    output$pS_value_box <- renderUI({ fn_main_value_box(df$df) })
+    output$pS_value_box <- renderUI({ fn_main_value_box(df$df, df_classes = df$df_classes) })
 
     main_value_box_active <- reactive(fn_main_value_box(df$df_active, 'Active'))
     output$pE_value_box <- renderUI({ main_value_box_active() })
@@ -463,7 +428,47 @@ dataviz <- function(dataset) {
           digits = 2,
           currency = ''
         ) |>
-        formatPercentage('perc_nas', digits = 2)
+        formatPercentage('perc_nas', digits = 2) |>
+        formatStyle(
+          'type',
+          fontWeight = 'bold',
+          backgroundColor = styleEqual(
+            c('double', 'integer', 'character', 'logical', 'complex', 'raw'),
+            c(rep('#fcc932', 2), '#75bbf5', '#eba881' , rep('#be6d81', 2))
+          )
+        ) |>
+        formatStyle(
+          'size',
+          background = styleColorBar(range(pS_t1()$size) + range(pS_t1()$size)/100 * c(-1, 1), '#00bf7f'),
+          backgroundSize = '100% 20%',
+          backgroundRepeat = 'no-repeat',
+          backgroundPosition = 'top') |>
+        formatStyle(
+          'min',
+          background = styleColorBar(
+            range(pS_t1()$min[!is.na(pS_t1()$min)]) + range(pS_t1()$min[!is.na(pS_t1()$min)])/100 * c(-1, 1), '#d867b2'),
+          backgroundSize = '100% 20%',
+          backgroundRepeat = 'no-repeat',
+          backgroundPosition = 'top') |>
+        formatStyle(
+          'max',
+          background = styleColorBar(
+            range(pS_t1()$max[!is.na(pS_t1()$max)]) + range(pS_t1()$max[!is.na(pS_t1()$max)])/100 * c(-1, 1), '#bf007f'),
+          backgroundSize = '100% 20%',
+          backgroundRepeat = 'no-repeat',
+          backgroundPosition = 'top') |>
+        formatStyle(
+          'n_nas',
+          background = styleColorBar(range(pS_t1()$n_nas) + range(pS_t1()$n_nas)/100 * c(-1, 1), '#b62020'),
+          backgroundSize = '100% 20%',
+          backgroundRepeat = 'no-repeat',
+          backgroundPosition = 'top') |>
+        formatStyle(
+          'perc_nas',
+          background = styleColorBar(c(-0.001, 1.05), '#919191'),
+          backgroundSize = '100% 20%',
+          backgroundRepeat = 'no-repeat',
+          backgroundPosition = 'top')
     )
 
     # overview -----------------------
@@ -594,11 +599,23 @@ dataviz <- function(dataset) {
 
     # select cols ---------------------------
     observe({
-      df$df_active <- subset(df$df_active,
-        select = if(input$pE_filter_radio_var_sel == 'keep') {
-          input$pE_filter_vars_sel
-        } else { setdiff(names(df$df_active), input$pE_filter_vars_sel)})
-      showNotification('Select columns: OK', type = 'message', duration = 2)
+
+      if(input$pE_filter_radio_var_sel == 'keep') {
+        if(input$pE_filter_vars_sel |> length() == 0){
+          showNotification('Select at least 1 variable', type = 'message', duration = 2)
+        } else {
+          df$df_active <- subset(df$df_active, select = input$pE_filter_vars_sel)
+          showNotification('Select columns: OK', type = 'message', duration = 2)
+        }
+      } else if (input$pE_filter_radio_var_sel == 'drop'){
+        if(identical(input$pE_filter_vars_sel, names(df$df_active))){
+          showNotification('Leave at least 1 variable', type = 'message', duration = 2)
+        } else {
+          df$df_active <- subset(df$df_active,
+            select = setdiff(names(df$df_active), input$pE_filter_vars_sel))
+          showNotification('Select columns: OK', type = 'message', duration = 2)
+        }
+      }
     }) |> bindEvent(input$pE_filter_btn_sel)
     # reset df active ---------------------------
     observe({
