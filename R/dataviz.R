@@ -215,6 +215,15 @@ dataviz <- function(dataset) {
                                  c('First 100' = 'first', 'Sample 100' = 'sample'),
                                  inline = T),
                     DTOutput('pE_t1'))),
+                nav_panel(
+                  'Export',
+                  layout_column_wrap(
+                    card(
+                      textInput('pE_export_file_name', 'File name', value = 'dataset', placeholder = T),
+                      radioButtons('pE_export_radio_format', 'File format', c('csv', 'RDS'), inline = T),
+                      downloadButton('pE_export_down', 'Export Active Dataset', icon('download'))                      
+                    )
+                  ))    
               )
             )
           )
@@ -639,6 +648,26 @@ dataviz <- function(dataset) {
             rownames = F,
             options = list(dom = 'Bftp', pageLength = 5, colReorder = T)
           )
+      }
+    )
+
+    # export ----------------------------------------------------
+    output$pE_export_down <- downloadHandler(
+
+      filename = function() {
+        paste(input$pE_export_file_name, 
+          if(input$pE_export_radio_format == 'csv'){
+            '.csv'
+          } else if (input$pE_export_radio_format == 'RDS'){
+            '.RDS'
+          })
+      },
+      content = function(file) {
+        if(input$pE_export_radio_format == 'csv'){
+          fwrite(df$df_active, file)
+        } else if (input$pE_export_radio_format == 'RDS'){
+          saveRDS(df$df_active, file)
+        }
       }
     )
 
