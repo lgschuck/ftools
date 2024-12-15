@@ -219,8 +219,19 @@ dataviz <- function(dataset) {
                   'Export',
                   layout_column_wrap(
                     card(
-                      textInput('pE_export_file_name', 'File name', value = 'dataset', placeholder = T),
-                      radioButtons('pE_export_radio_format', 'File format', c('csv', 'RDS'), inline = T),
+                      layout_column_wrap(
+                        textInput('pE_export_file_name', 'File name', value = 'dataset'),
+                        radioButtons('pE_export_radio_format', 'File format', 
+                          c('csv', 'RDS', 'RDS Compressed'), inline = T)
+                        ),
+                      checkboxInput('pE_export_x_rownames', 'Rownames (csv)'),
+                      radioButtons('pE_export_radio_separator', 'Separator (csv)', 
+                        c('Comma' = ',', 'Semicolon' = ';'), inline = T),
+                      radioButtons('pE_export_radio_decimal', 'Decimal Mark (csv)', 
+                        c('Dot' = '.', 'Comma' = ','), inline = T),
+                      textInput('pE_export_txt_na', 'Missing (NA) substitute (csv)', value = ''),
+                      radioButtons('pE_export_radio_scientific', 'Scientific Notation (csv)',
+                        c('No' = 999999999, 'Allow' = 0), inline = T),  
                       downloadButton('pE_export_down', 'Export Active Dataset', icon('download'))                      
                     )
                   ))    
@@ -658,15 +669,25 @@ dataviz <- function(dataset) {
         paste(input$pE_export_file_name, 
           if(input$pE_export_radio_format == 'csv'){
             '.csv'
-          } else if (input$pE_export_radio_format == 'RDS'){
+          } else if (input$pE_export_radio_format == 'RDS' |
+            input$pE_export_radio_format == 'RDS Compressed'){
             '.RDS'
           })
       },
       content = function(file) {
         if(input$pE_export_radio_format == 'csv'){
-          fwrite(df$df_active, file)
+          fwrite(df$df_active, file, 
+            row.names = input$pE_export_x_rownames,
+            # row.names = T,
+            sep = input$pE_export_radio_separator,
+            dec = input$pE_export_radio_decimal,
+            na = input$pE_export_txt_na,
+            scipen = as.integer(input$pE_export_radio_scientific)
+          )
         } else if (input$pE_export_radio_format == 'RDS'){
-          saveRDS(df$df_active, file)
+          saveRDS(df$df_active, file, compress = F)
+        } else if (input$pE_export_radio_format == 'RDS Compressed') {
+          saveRDS(df$df_active, file, compress = T)
         }
       }
     )
