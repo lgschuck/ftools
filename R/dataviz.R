@@ -597,7 +597,7 @@ dataviz <- function(dataset) {
 
       pE_filter_value_temp <- input$pE_filter_value
 
-      if(df$df_active[[input$pE_filter_vars_filter]] |> is.numeric()) as.numeric(pE_filter_value_temp)
+      if(df$df_active[[input$pE_filter_vars_filter]] |> is.numeric()) pE_filter_value_temp <- as.numeric(pE_filter_value_temp)
       if(input$pE_filter_operator == '=='){
         df$df_active <-
           df$df_active[get(input$pE_filter_vars_filter) == pE_filter_value_temp, ]
