@@ -69,7 +69,6 @@ dataviz <- function(dataset) {
           style = 'background-color: #02517d;',
           navset_card_tab(
             height = '800px',
-            full_screen = T,
             nav_panel(
               'Highlights',
               card_body(
@@ -180,16 +179,19 @@ dataviz <- function(dataset) {
                         'pE_filter_operator',
                         'Operator',
                         c('== (Equal)' = '==',
-                          '!= (Different)' = '!=',
+                          '!= (Not Equal)' = '!=',
                           '> (Greater)' = '>',
                           '>= (Greater or Equal)' = '>=',
                           '< (Less)' = '<',
                           '<= (Less or Equal)' = '<=',
-                          'Is NA' = 'is.na',
-                          'Not NA' = 'not.na')
+                          'Is NA (is.na)' = 'is.na',
+                          'Not NA (! is.na)' = 'not.na'
+                          # 'In (%in%)' = 'in',
+                          # 'Not In (! %in%)' = 'not_in'
+                        )
                       ),
                       textInput('pE_filter_value', 'Value') |>
-                        tooltip('Text must in quotes'),
+                        tooltip('Text should not be in quotes'),
                         actionButton('pE_filter_btn_filter', 'Apply filters', icon('check')),
                       )
                     ),
@@ -204,8 +206,14 @@ dataviz <- function(dataset) {
                     )
                   ),
                   layout_column_wrap(
-                    actionButton('pE_btn_reset', 'Reset Dataset', icon('copy')) |>
-                       tooltip('Restore to original Dataset', placement = 'top')
+                    actionButton('pE_btn_reset', 'Reset Dataset', icon('arrow-rotate-right')) |>
+                       tooltip('Restore the original dataset to the Active dataset', placement = 'top'),
+                    actionButton('pE_export_btn_bkp', 'Create Backup', icon('cloud-arrow-up')) |> 
+                      tooltip('Create a copy of the Active dataset', placement = 'top'),
+                    actionButton('pE_export_btn_restore', 'Restore Backup', icon('cloud-arrow-down')) |> 
+                      tooltip('Restore a previously created backup', placement = 'top'),
+                    actionButton('pE_export_btn_clear_bkp', 'Clear Backup', icon('trash')) |> 
+                      tooltip('Erase the backup', placement = 'top'),
                   )
                 ),
                 nav_panel(
@@ -231,14 +239,15 @@ dataviz <- function(dataset) {
                         c('Dot' = '.', 'Comma' = ','), inline = T),
                       textInput('pE_export_txt_na', 'Missing (NA) substitute (csv)', value = ''),
                       radioButtons('pE_export_radio_scientific', 'Scientific Notation (csv)',
-                        c('No' = 999999999, 'Allow' = 0), inline = T),  
-                      downloadButton('pE_export_down', 'Export Active Dataset', icon('download'))                      
-                    )
-                  ))    
+                        c('No' = 999999999, 'Allow' = 0), inline = T),
+                      downloadButton('pE_export_down', 'Export Active Dataset', icon('download'))
+                  )
+                )    
               )
             )
           )
         )
+      )
     ),
 
     # page analysis -----------------------------------------------------------
@@ -293,7 +302,7 @@ dataviz <- function(dataset) {
                   layout_column_wrap(
                     checkboxInput('pA_scatter_lm', 'Plot Linear Model', F) |>
                       tooltip('Show the line only if LM model was created'),
-                    actionButton('pA_btn_scatter', 'Plot', icon('gear'))
+                    actionButton('pA_btn_scatter', 'Generate Plot', icon('gear'))
                   )
                 )
               ),
@@ -306,7 +315,7 @@ dataviz <- function(dataset) {
                     sliderInput('pA_sample_size', 'Sample Size (%)', 0, 100, 100) |>
                       tooltip('Applied only if valid values are greater than 10.000'),
                     actionButton('pA_btn_scatter_lm_run', 'Run Linear Model', icon('gear')),
-                    actionButton('pA_btn_scatter_lm_clear', 'Clear Linear Model', icon('x'))),
+                    actionButton('pA_btn_scatter_lm_clear', 'Clear Linear Model', icon('trash'))),
                   nav_panel('Output', verbatimTextOutput('pA_linear_model')),
                   nav_panel(
                     'Residuals',
@@ -352,7 +361,8 @@ dataviz <- function(dataset) {
     df <- reactiveValues(
       df = dataset,
       df_active = dataset,
-      df_classes = dataset_classes
+      df_classes = dataset_classes,
+      df_backup = NULL
     )
     df_active_names <- reactive(df$df_active |> names())
 
@@ -612,6 +622,12 @@ dataviz <- function(dataset) {
       } else if(input$pE_filter_operator == 'not.na'){
         df$df_active <-
           df$df_active[!is.na(get(input$pE_filter_vars_filter)), ]
+      # } else if(input$pE_filter_operator == 'in'){
+      #   df$df_active <-
+      #     df$df_active[get(input$pE_filter_vars_filter) %in% c(pE_filter_value_temp), ]
+      # } else if(input$pE_filter_operator == 'not_in'){
+      #   df$df_active <-
+      #     df$df_active[!get(input$pE_filter_vars_filter) %in% c(pE_filter_value_temp), ]
       }
 
       showNotification('Filter rows: OK', type = 'message', duration = 2)
@@ -642,6 +658,32 @@ dataviz <- function(dataset) {
       df$df_active <- df$df
       showNotification('Active Dataset Reseted', type = 'message', duration = 2)
     }) |> bindEvent(input$pE_btn_reset)
+
+    # create backup ---------------------------
+    observe({
+      df$df_backup <- df$df_active
+      showNotification('Backup created', type = 'message', duration = 2)
+    }) |> bindEvent(input$pE_export_btn_bkp)
+
+    # restore backup ---------------------------
+    observe({
+      if(is.null(df$df_backup)){
+        showNotification('No backup to restore', type = 'message', duration = 2)
+      } else {
+        df$df_active <- df$df_backup
+        showNotification('Backup restored', type = 'message', duration = 2)
+      }  
+    }) |> bindEvent(input$pE_export_btn_restore)
+    
+    # clear backup ---------------------------
+    observe({
+      if(is.null(df$df_backup)){
+        showNotification('No backup to clear', type = 'message', duration = 2)
+      } else {
+        df$df_backup <- NULL
+        showNotification('Backup cleared', type = 'message', duration = 2)
+      }  
+    }) |> bindEvent(input$pE_export_btn_clear_bkp)
 
     # overview ----------------------------------
     output$pE_t1 <- renderDT(
@@ -694,11 +736,13 @@ dataviz <- function(dataset) {
 
     # analysis page events ----------------------------------------------------
     output$pA_ui_var_names <- renderUI(
-      selectInput('pA_sel_vars', 'Variable', df_active_names())
+      selectInput('pA_sel_vars', 'Main Variable', df_active_names()) |> 
+        tooltip('Dependent Variable', placement = 'top')
     )
 
     output$pA_ui_var_names2 <- renderUI(
-      selectInput('pA_sel_vars2', 'Variable', df_active_names(), df_active_names()[2])
+      selectInput('pA_sel_vars2', 'Variable 2', df_active_names(), df_active_names()[2]) |> 
+        tooltip('Independent Variable', placement = 'top')
     )
 
     pA_outliers_index <- reactive({
