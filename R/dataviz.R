@@ -65,89 +65,90 @@ dataviz <- function(dataset) {
         height = '100px'
       ),
       card(full_screen = T,
-        card_body(
-          style = 'background-color: #02517d;',
-          navset_card_tab(
-            height = '800px',
-            nav_panel(
-              'Highlights',
-              card_body(
-                layout_column_wrap(
-                  value_box(
-                    title = 'Numeric Vars',
-                    value = sapply(dataset, is.numeric) |> sum(),
-                    showcase = bs_icon('123'),
-                    theme = 'warning'
-                  ),
-                  value_box(
-                    title = 'Character Vars',
-                    value = sapply(dataset, is.character) |> sum(),
-                    showcase = bs_icon('alphabet'),
-                    theme = 'secondary'
-                  ),
-                  value_box(
-                    title = 'Factor Vars',
-                    value = sapply(dataset, is.factor) |> sum(),
-                    showcase = bs_icon('diagram-3'),
-                    theme = 'success'
-                  ),
-                  value_box(
-                    title = 'Date Vars',
-                    value = sapply(
-                      dataset,
-                      \(x) inherits(x, c('Date', 'POSIXt', 'POSIXct', 'POSIXlt'))) |>
-                      sum(),
-                    showcase = bs_icon('calendar3'),
-                    theme = 'bg-purple'
-                  )
-                ),
-                layout_column_wrap(
-                  value_box(
-                    title = "Var with most NA's",
-                    value = textOutput('pS_var_most_nas'),
-                    showcase = bs_icon('database-x'),
-                    theme = 'bg-red',
-                    p(textOutput('pS_var_most_nas_n', inline = T), ' rows')
-                  ) |> tooltip("Showing 1, there may be ties.", placement = 'top'),
-                  value_box(
-                    title = "Var with biggest % of NA's",
-                    value = textOutput('pS_var_biggest_perc_nas'),
-                    showcase = bs_icon('percent'),
-                    theme = 'light',
-                    p(textOutput('pS_var_biggest_perc_nas_perc', inline = T), ' %')
-                  ) |> tooltip("Showing 1, there may be ties.", placement = 'top'),
-                  value_box(
-                    title = 'Var with max value',
-                    value = textOutput('pS_var_max_value', inline = T),
-                    showcase = bs_icon('graph-up-arrow', placement = 'top'),
-                    theme = 'pink',
-                    p('Max value:', textOutput('pS_max_value', inline = T)),
-                    hr(),
-                    p(bs_icon('graph-down-arrow'), 'Var with min value'),
-                    p(textOutput('pS_var_min_value', inline = T)),
-                    p('Min value:', textOutput('pS_min_value', inline = T))
-                  ) |> tooltip("Showing 1, there may be ties.", placement = 'top'),
-                  value_box(
-                    title = "Var with biggest size",
-                    value = textOutput('pS_var_biggest_size'),
-                    showcase = bs_icon('sd-card'),
-                    theme = 'teal',
-                    p(textOutput('pS_var_biggest_size_size', inline = T), 'kB')
-                  ) |> tooltip("Showing 1, there may be ties.", placement = 'top')
-                )
-              )
-            ),
-            nav_panel('Variables', card_body(DTOutput('pS_t1'))),
-            nav_panel(
-              'Overview',
-              card_body(
-                radioButtons('pS_over_radio_sample', NULL,
-                             c('First 100' = 'first', 'Sample 100' = 'sample'),
-                             inline = T),
-                DTOutput('pS_t2'))
-            ),
-          )
-        )
+           card_body(
+             style = 'background-color: #02517d;',
+             navset_card_tab(
+               height = '800px',
+               nav_panel(
+                 'Highlights',
+                 card_body(
+                   layout_column_wrap(
+                     value_box(
+                       title = 'Numeric Vars',
+                       value = sapply(dataset, is.numeric) |> sum(),
+                       showcase = bs_icon('123'),
+                       theme = 'bg-gradient-yellow-orange'
+                     ),
+                     value_box(
+                       title = 'Character Vars',
+                       value = sapply(dataset, is.character) |> sum(),
+                       showcase = bs_icon('alphabet'),
+                       theme = 'bg-gradient-blue-indigo'
+                     ),
+                     value_box(
+                       title = 'Factor Vars',
+                       value = sapply(dataset, is.factor) |> sum(),
+                       showcase = bs_icon('diagram-3'),
+                       theme = 'bg-gradient-green-indigo'
+                     ),
+                     value_box(
+                       title = 'Date Vars',
+                       value = sapply(
+                         dataset,
+                         \(x) inherits(x, c('Date', 'POSIXt', 'POSIXct', 'POSIXlt'))) |>
+                         sum(),
+                       showcase = bs_icon('calendar3'),
+                       theme = 'bg-gradient-purple-indigo'
+                     )
+                   ),
+                   layout_column_wrap(
+                     value_box(
+                       title = "Var with most NA's",
+                       value = textOutput('pS_var_most_nas'),
+                       showcase = bs_icon('database-x'),
+                       theme = 'bg-gradient-red-indigo',
+                       p(textOutput('pS_var_most_nas_n', inline = T), ' rows')
+                     ) |> tooltip("Showing 1, there may be ties.", placement = 'top'),
+                     value_box(
+                       title = "Var with biggest % of NA's",
+                       value = textOutput('pS_var_biggest_perc_nas'),
+                       showcase = bs_icon('percent'),
+                       theme = 'light',
+                       p(textOutput('pS_var_biggest_perc_nas_perc', inline = T), ' %')
+                     ) |> tooltip("Showing 1, there may be ties.", placement = 'top'),
+                     value_box(
+                       title = 'Var with max value',
+                       value = textOutput('pS_var_max_value', inline = T),
+                       showcase = bs_icon('graph-up-arrow', placement = 'top'),
+                       theme = 'bg-gradient-pink-indigo',
+                       p('Max value:', textOutput('pS_max_value', inline = T)),
+                       hr(),
+                       p(bs_icon('graph-down-arrow'), 'Var with min value'),
+                       p(textOutput('pS_var_min_value', inline = T)),
+                       p('Min value:', textOutput('pS_min_value', inline = T))
+                     ) |> tooltip("Showing 1, there may be ties.", placement = 'top'),
+                     value_box(
+                       title = "Var with biggest size",
+                       value = textOutput('pS_var_biggest_size'),
+                       showcase = bs_icon('sd-card'),
+                       theme = 'bg-gradient-teal-indigo',
+                       p(textOutput('pS_var_biggest_size_size', inline = T), 'kB')
+                     ) |> tooltip("Showing 1, there may be ties.", placement = 'top')
+                   )
+                 )
+               ),
+               nav_panel('Variables', card_body(DTOutput('pS_t1'))),
+               nav_panel(
+                 'Overview',
+                 card_body(
+                   radioButtons('pS_over_radio_sample', NULL,
+                                c('First' = 'first', 'Sample' = 'sample'),
+                                inline = T),
+                   numericInput('pS_over_size_sample', NULL, 100, 100, 1e4, 100),
+                   DTOutput('pS_t2'))
+               ),
+             )
+           )
       )
     ),
 
@@ -167,86 +168,126 @@ dataviz <- function(dataset) {
              layout_columns(
                height = '800px',
                navset_card_tab(
-                 #full_screen = T,
                  nav_panel(
                    'Filter',
                    layout_column_wrap(
-                    card(
-                      card_header('Filter Rows', class = "bg-primary"),
-                      card_body(
-                      uiOutput('pE_filter_ui_var_filter'),
-                      selectInput(
-                        'pE_filter_operator',
-                        'Operator',
-                        c('== (Equal)' = '==',
-                          '!= (Not Equal)' = '!=',
-                          '> (Greater)' = '>',
-                          '>= (Greater or Equal)' = '>=',
-                          '< (Less)' = '<',
-                          '<= (Less or Equal)' = '<=',
-                          'Is NA (is.na)' = 'is.na',
-                          'Not NA (! is.na)' = 'not.na'
-                          # 'In (%in%)' = 'in',
-                          # 'Not In (! %in%)' = 'not_in'
-                        )
-                      ),
-                      textInput('pE_filter_value', 'Value') |>
-                        tooltip('Text should not be in quotes'),
-                        actionButton('pE_filter_btn_filter', 'Apply filters', icon('check')),
-                      )
-                    ),
-                    card(
-                      card_header('Select Columns', class = "bg-primary"),
-                      card_body(
-                        uiOutput('pE_filter_ui_var_sel'),
-                        radioButtons('pE_filter_radio_var_sel', NULL,
-                                     c('Keep' = 'keep',
-                                       'Drop' = 'drop'), inline = T),
-                        actionButton('pE_filter_btn_sel', 'Apply selection', icon('check')))
-                    )
-                  ),
-                  layout_column_wrap(
-                    actionButton('pE_btn_reset', 'Reset Dataset', icon('arrow-rotate-right')) |>
-                       tooltip('Restore the original dataset to the Active dataset', placement = 'top'),
-                    actionButton('pE_export_btn_bkp', 'Create Backup', icon('cloud-arrow-up')) |> 
-                      tooltip('Create a copy of the Active dataset', placement = 'top'),
-                    actionButton('pE_export_btn_restore', 'Restore Backup', icon('cloud-arrow-down')) |> 
-                      tooltip('Restore a previously created backup', placement = 'top'),
-                    actionButton('pE_export_btn_clear_bkp', 'Clear Backup', icon('trash')) |> 
-                      tooltip('Erase the backup', placement = 'top'),
-                  )
-                ),
-                nav_panel(
-                  'Overview',
-                  card_body(
-                    radioButtons('pE_over_radio_sample', NULL,
-                                 c('First 100' = 'first', 'Sample 100' = 'sample'),
-                                 inline = T),
-                    DTOutput('pE_t1'))),
-                nav_panel(
-                  'Export',
-                  layout_column_wrap(
-                    card(
-                      layout_column_wrap(
-                        textInput('pE_export_file_name', 'File name', value = 'dataset'),
-                        radioButtons('pE_export_radio_format', 'File format', 
-                          c('csv', 'RDS', 'RDS Compressed'), inline = T)
-                        ),
-                      checkboxInput('pE_export_x_rownames', 'Rownames (csv)'),
-                      radioButtons('pE_export_radio_separator', 'Separator (csv)', 
-                        c('Comma' = ',', 'Semicolon' = ';'), inline = T),
-                      radioButtons('pE_export_radio_decimal', 'Decimal Mark (csv)', 
-                        c('Dot' = '.', 'Comma' = ','), inline = T),
-                      textInput('pE_export_txt_na', 'Missing (NA) substitute (csv)', value = ''),
-                      radioButtons('pE_export_radio_scientific', 'Scientific Notation (csv)',
-                        c('No' = 999999999, 'Allow' = 0), inline = T),
-                      downloadButton('pE_export_down', 'Export Active Dataset', icon('download'))
-                  )
-                )    
-              )
-            )
-          )
-        )
+                     card(
+                       card_header('Filter Rows', class = 'bg-primary'),
+                       card_body(
+                         uiOutput('pE_filter_ui_var_filter'),
+                         selectInput(
+                           'pE_filter_operator',
+                           'Operator',
+                           c('== (Equal)' = '==',
+                             '!= (Not Equal)' = '!=',
+                             '> (Greater)' = '>',
+                             '>= (Greater or Equal)' = '>=',
+                             '< (Less)' = '<',
+                             '<= (Less or Equal)' = '<=',
+                             'Is NA (is.na)' = 'is_na',
+                             'Not NA (! is.na)' = 'not_na',
+                             'In (%in%)' = 'in',
+                             'Not In (! %in%)' = 'not_in'
+                           )
+                         ),
+                         selectizeInput(
+                           'pE_filter_value', 'Value',
+                           choices = NULL,
+                           multiple = TRUE,
+                           options = list(create = TRUE)
+                         ) |>
+                           tooltip('Text should not be in quotes'),
+                         verbatimTextOutput('pE_filter_txt_preview', placeholder = TRUE)),
+                         actionButton('pE_filter_btn_filter', 'Apply filters', icon('check'))
+                     ),
+                     card(
+                       card_header('Select Columns', class = 'bg-primary'),
+                       card_body(
+                         uiOutput('pE_filter_ui_var_sel'),
+                         radioButtons('pE_filter_radio_var_sel', NULL,
+                                      c('Keep' = 'keep',
+                                        'Drop' = 'drop'), inline = T),
+                         actionButton('pE_filter_btn_sel', 'Apply selection', icon('check')))
+                     )
+                   ),
+                 ),
+                 nav_panel(
+                   'Convert',
+                   layout_column_wrap(
+                     # col_widths = c(2, 8),
+                     card(
+                       card_header('Conversions', class = 'bg-primary'),
+                       uiOutput('pE_convert_ui_var_sel'),
+                       p('Current Type / Class'),
+                       verbatimTextOutput('pE_convert_current_format'),
+                       selectInput('pE_convert_sel_format', 'Select the new format',
+                                   c('', 'as.numeric', 'as.integer', 'as.double',
+                                     'as.character', 'as.double', 'as.Date',
+                                     'as.raw', 'as.complex')),
+                       actionButton('pE_convert_btn_apply', 'Apply conversion', icon('hammer'))
+                     ),
+                     card(
+                      card_header('Preview', class = 'bg-primary'),
+                      DTOutput('pE_convert_preview_t1')
+                     )
+                   )
+                 ),
+                 nav_panel(
+                   'Overview',
+                   card_body(
+                     radioButtons('pE_over_radio_sample', NULL,
+                                  c('First' = 'first', 'Sample' = 'sample'),
+                                  inline = T),
+                     numericInput('pE_over_size_sample', NULL, 100, 100, 1e4, 100),
+                     DTOutput('pE_t1'))),
+                 nav_panel(
+                   'Export',
+                   layout_column_wrap(
+                     card(
+                       layout_column_wrap(
+                         textInput('pE_export_file_name', 'File name', value = 'dataset'),
+                         radioButtons('pE_export_radio_format', 'File format',
+                                      c('csv', 'RDS', 'RDS Compressed'), inline = T)
+                       ),
+                       card(
+                         card_header('Csv Parameters', class = 'bg-primary'),
+                         checkboxInput('pE_export_x_rownames', 'Save row names'),
+                         layout_column_wrap(
+                           radioButtons('pE_export_radio_separator', 'Separator',
+                                        c('Comma' = ',', 'Semicolon' = ';'), inline = T),
+                           radioButtons('pE_export_radio_decimal', 'Decimal Mark',
+                                        c('Dot' = '.', 'Comma' = ','), inline = T)
+                         ),
+                         layout_column_wrap(
+                           textInput('pE_export_txt_na', 'Missing (NA) substitute', value = ''),
+                           radioButtons('pE_export_radio_scientific', 'Scientific Notation',
+                                        c('No' = 999999999, 'Allow' = 0), inline = T)
+                         )
+                       ),
+                       downloadButton('pE_export_down', 'Export Active Dataset', icon('download'))
+                     )
+                   )
+                 )
+               )
+             )
+
+           ),
+           card_footer(
+             layout_column_wrap(
+               actionButton('pE_btn_reset', 'Reset Dataset', icon('arrow-rotate-right'),
+                            style = '--bs-btn-bg: #f2f2f2;') |>
+                 tooltip('Restore the original dataset to the Active dataset', placement = 'top'),
+               actionButton('pE_export_btn_bkp', 'Create Backup', icon('cloud-arrow-up'),
+                            style = '--bs-btn-bg: #f2f2f2;') |>
+                 tooltip('Create a copy of the Active dataset', placement = 'top'),
+               actionButton('pE_export_btn_restore', 'Restore Backup', icon('cloud-arrow-down'),
+                            style = '--bs-btn-bg: #f2f2f2;') |>
+                 tooltip('Restore a previously created backup', placement = 'top'),
+               actionButton('pE_export_btn_clear_bkp', 'Clear Backup', icon('trash'),
+                            style = '--bs-btn-bg: #f2f2f2;margin: 0px') |>
+                 tooltip('Erase the backup', placement = 'top'),
+             ),
+             style = 'background-color: #02517d;')
       )
     ),
 
@@ -274,7 +315,7 @@ dataviz <- function(dataset) {
                         uiOutput('pA_ui_var_names2')),
               nav_panel('Filters', checkboxInput('pA_outliers', 'Remove Outliers', F) |>
                           tooltip('Only for numeric vars', placement = 'top'))
-              ),
+            ),
             navset_card_tab(
               full_screen = T,
               nav_panel(
@@ -350,7 +391,22 @@ dataviz <- function(dataset) {
       value = 'exit',
       title = 'Exit',
       icon = bs_icon('x-square-fill'),
-      tags$head(tags$script(HTML(js_exit)))
+      tags$head(tags$script(HTML(js_exit))),
+
+      # config style
+      tags$head(
+        tags$style(HTML(
+          "
+          /* change color of navbar */
+          .navbar {
+            background: linear-gradient(to right, #1d3f52, #033854, #02517d, #317aa3);
+          }
+
+          /* change size of nav panel */
+          .nav-link {font-size: 18px; }
+
+          "))
+      )
     )
   )
 
@@ -359,8 +415,8 @@ dataviz <- function(dataset) {
   ### -------------------------------------------------------------------------
   server <- function(input, output, session) {
     df <- reactiveValues(
-      df = dataset,
-      df_active = dataset,
+      df = copy(dataset),
+      df_active = copy(dataset),
       df_classes = dataset_classes,
       df_backup = NULL
     )
@@ -375,7 +431,7 @@ dataviz <- function(dataset) {
             title = paste(df_name, 'Dataset Class'),
             value = df_classes |> head(1),
             showcase = bs_icon('file-binary'),
-            theme = 'primary'
+            theme = 'bg-gradient-blue-indigo'
           ),
           value_box(
             title = 'Rows / Columns',
@@ -385,19 +441,19 @@ dataviz <- function(dataset) {
               ncol(df) |> f_num(dec = '.', big = ',')
             ),
             showcase = bs_icon('layout-text-sidebar-reverse'),
-            theme = 'primary'
+            theme = 'bg-gradient-blue-indigo'
           ),
           value_box(
             title = "Columns with NA's",
             value = sum(colSums(is.na(df)) > 0),
             showcase = bs_icon("database-x"),
-            theme = "primary"
+            theme = 'bg-gradient-blue-indigo'
           ),
           value_box(
             title = 'Size (MB)',
             value = (object.size(df) / 2^20) |> as.numeric() |> round(2),
             showcase = bs_icon('sd-card'),
-            theme = 'primary'
+            theme = 'bg-gradient-blue-indigo'
           )
         )
       )
@@ -447,9 +503,9 @@ dataviz <- function(dataset) {
             pageLength = 10,
             colReorder = T,
             columnDefs = list(
-              list(targets = 0, width = '400px'),
-              list(targets = 1:2, width = '200px'),
-              list(targets = 3:7, width = '100px')
+              list(targets = 0, width = '400px', className = 'dt-left'),
+              list(targets = 1:2, width = '200px', className = 'dt-left'),
+              list(targets = 3:7, width = '100px', className = 'dt-right')
             )
           )
         ) |>
@@ -504,19 +560,23 @@ dataviz <- function(dataset) {
     # overview -----------------------
     output$pS_t2 <- renderDT(
       {
-        pS_over_sample_size <- min(100, nrow(df$df))
+        req(input$pS_over_size_sample)
+        pS_over_n_show <- max(1, input$pS_over_size_sample)
+        pS_over_n_show <- min(pS_over_n_show, nrow(df$df))
+
         if(input$pS_over_radio_sample == 'first'){
-          pS_over_idx <- 1:pS_over_sample_size
+          pS_over_idx <- 1:pS_over_n_show
         } else if (input$pS_over_radio_sample == 'sample'){
-          pS_over_idx <- sample.int(nrow(df$df), pS_over_sample_size, replace = F)
+          pS_over_idx <- sample.int(nrow(df$df), pS_over_n_show, replace = F)
         }
 
         df$df[pS_over_idx, ] |>
           datatable(
             extensions = 'ColReorder',
             rownames = F,
-            options = list(dom = 'Bftp', pageLength = 5, colReorder = T)
-        )
+            options = list(dom = 'Bftp', pageLength = 5, colReorder = T,
+              columnDefs = list(list(targets = '_all', className = 'dt-right')))
+          )
       }
     )
 
@@ -582,55 +642,80 @@ dataviz <- function(dataset) {
     )
 
     # edit page events -------------------------------------------------------
+
+    # filter events ---------------------------
     output$pE_filter_ui_var_filter <- renderUI(
       selectInput('pE_filter_vars_filter', 'Variable', df_active_names())
     )
 
     output$pE_filter_ui_var_sel <- renderUI(
       selectInput('pE_filter_vars_sel', 'Variable',
-      df_active_names(), selected = df_active_names()[1], multiple = T)
+                  df_active_names(), selected = df_active_names()[1], multiple = T)
     )
-    # filter events ---------------------------
+
+    pE_filter_value_temp <- reactive({
+      if(df$df_active[[input$pE_filter_vars_filter]] |> is.numeric()){
+        unlist(input$pE_filter_value) |> as.numeric()
+      } else if (inherits(df$df_active[[input$pE_filter_vars_filter]], 'Date')){
+        unlist(input$pE_filter_value) |> as.Date()
+      } else if (df$df_active[[input$pE_filter_vars_filter]] |> is.factor()){
+        unlist(input$pE_filter_value) |> as.factor()
+      } else if (df$df_active[[input$pE_filter_vars_filter]] |> is.raw()){
+        unlist(input$pE_filter_value) |> as.raw()
+      } else if (df$df_active[[input$pE_filter_vars_filter]] |> is.complex()){
+        unlist(input$pE_filter_value) |> as.complex()
+      } else {
+        input$pE_filter_value
+      }
+    })
+
+    output$pE_filter_txt_preview <- renderPrint({
+      req(input$pE_filter_value)
+      cat("Preview value: ")
+      print(pE_filter_value_temp())
+    })
 
     # filter rows
     observe({
+      if(length(pE_filter_value_temp()) > 1 & input$pE_filter_operator %in%
+         c('==', '!=', '>', '>=', '<', '<=')){
+        showNotification('Operator requires value of length 1', type = 'error')
+      } else {
 
-      pE_filter_value_temp <- input$pE_filter_value
+        if(input$pE_filter_operator == '=='){
+          df$df_active <-
+            df$df_active[get(input$pE_filter_vars_filter) == pE_filter_value_temp(), ]
+        } else if(input$pE_filter_operator == '!='){
+          df$df_active <-
+            df$df_active[get(input$pE_filter_vars_filter) != pE_filter_value_temp(), ]
+        } else if(input$pE_filter_operator == '>'){
+          df$df_active <-
+            df$df_active[get(input$pE_filter_vars_filter) > pE_filter_value_temp(), ]
+        } else if(input$pE_filter_operator == '>='){
+          df$df_active <-
+            df$df_active[get(input$pE_filter_vars_filter) >= pE_filter_value_temp(), ]
+        } else if(input$pE_filter_operator == '<'){
+          df$df_active <-
+            df$df_active[get(input$pE_filter_vars_filter) < pE_filter_value_temp(), ]
+        } else if(input$pE_filter_operator == '<='){
+          df$df_active <-
+            df$df_active[get(input$pE_filter_vars_filter) <= pE_filter_value_temp(), ]
+        } else if(input$pE_filter_operator == 'is_na'){
+          df$df_active <-
+            df$df_active[is.na(get(input$pE_filter_vars_filter)), ]
+        } else if(input$pE_filter_operator == 'not_na'){
+          df$df_active <-
+            df$df_active[!is.na(get(input$pE_filter_vars_filter)), ]
+          } else if(input$pE_filter_operator == 'in'){
+            df$df_active <-
+              df$df_active[get(input$pE_filter_vars_filter) %in% pE_filter_value_temp(), ]
+          } else if(input$pE_filter_operator == 'not_in'){
+            df$df_active <-
+              df$df_active[!get(input$pE_filter_vars_filter) %in% pE_filter_value_temp(), ]
+        }
 
-      if(df$df_active[[input$pE_filter_vars_filter]] |> is.numeric()) pE_filter_value_temp <- as.numeric(pE_filter_value_temp)
-      if(input$pE_filter_operator == '=='){
-        df$df_active <-
-          df$df_active[get(input$pE_filter_vars_filter) == pE_filter_value_temp, ]
-      } else if(input$pE_filter_operator == '!='){
-        df$df_active <-
-          df$df_active[get(input$pE_filter_vars_filter) != pE_filter_value_temp, ]
-      } else if(input$pE_filter_operator == '>'){
-        df$df_active <-
-          df$df_active[get(input$pE_filter_vars_filter) > pE_filter_value_temp, ]
-      } else if(input$pE_filter_operator == '>='){
-        df$df_active <-
-          df$df_active[get(input$pE_filter_vars_filter) >= input$pE_filter_value, ]
-      } else if(input$pE_filter_operator == '<'){
-        df$df_active <-
-          df$df_active[get(input$pE_filter_vars_filter) < pE_filter_value_temp, ]
-      } else if(input$pE_filter_operator == '<='){
-        df$df_active <-
-          df$df_active[get(input$pE_filter_vars_filter) <= pE_filter_value_temp, ]
-      } else if(input$pE_filter_operator == 'is.na'){
-        df$df_active <-
-          df$df_active[is.na(get(input$pE_filter_vars_filter)), ]
-      } else if(input$pE_filter_operator == 'not.na'){
-        df$df_active <-
-          df$df_active[!is.na(get(input$pE_filter_vars_filter)), ]
-      # } else if(input$pE_filter_operator == 'in'){
-      #   df$df_active <-
-      #     df$df_active[get(input$pE_filter_vars_filter) %in% c(pE_filter_value_temp), ]
-      # } else if(input$pE_filter_operator == 'not_in'){
-      #   df$df_active <-
-      #     df$df_active[!get(input$pE_filter_vars_filter) %in% c(pE_filter_value_temp), ]
+        showNotification('Filter rows: OK', type = 'message', duration = 2)
       }
-
-      showNotification('Filter rows: OK', type = 'message', duration = 2)
     }) |> bindEvent(input$pE_filter_btn_filter)
 
     # select cols ---------------------------
@@ -648,20 +733,92 @@ dataviz <- function(dataset) {
           showNotification('Leave at least 1 variable', type = 'message', duration = 2)
         } else {
           df$df_active <- subset(df$df_active,
-            select = setdiff(names(df$df_active), input$pE_filter_vars_sel))
+                                 select = setdiff(names(df$df_active), input$pE_filter_vars_sel))
           showNotification('Select columns: OK', type = 'message', duration = 2)
         }
       }
     }) |> bindEvent(input$pE_filter_btn_sel)
+
+    # convert events ---------------------------
+    output$pE_convert_ui_var_sel <- renderUI(
+      selectInput('pE_convert_vars_sel', 'Variable',
+                  df_active_names(), selected = df_active_names()[1])
+    )
+
+    output$pE_convert_current_format <- renderPrint(
+      {
+      req(input$pE_convert_vars_sel)
+      paste('Type: [', df$df_active[[input$pE_convert_vars_sel]] |> typeof(), '] |',
+            'Class: [',
+            paste(df$df_active[[input$pE_convert_vars_sel]] |> class(), collapse = '/'),
+            ']')
+      }
+    )
+
+    output$pE_convert_preview_t1 <- renderDT({
+
+      req(input$pE_convert_sel_format)
+
+      df_convert_preview_t1 <- reactive(
+        subset(
+          if(nrow(df$df_active) < 10) {
+            df$df_active }
+          else {
+            df$df_active[sample(nrow(df$df_active), 12, replace = T),]
+          },
+          select = input$pE_convert_vars_sel)
+      )
+
+      datatable(
+        if(input$pE_convert_sel_format == 'as.numeric'){
+          df_convert_preview_t1()[, preview := as.numeric(get(input$pE_convert_vars_sel))]
+        } else if(input$pE_convert_sel_format == 'as.integer'){
+          df_convert_preview_t1()[, preview := as.integer(get(input$pE_convert_vars_sel))]
+        } else if(input$pE_convert_sel_format == 'as.double'){
+          df_convert_preview_t1()[, preview := as.double(get(input$pE_convert_vars_sel))]
+        } else if(input$pE_convert_sel_format == 'as.character'){
+          df_convert_preview_t1()[, preview := as.character(get(input$pE_convert_vars_sel))]
+        } else if(input$pE_convert_sel_format == 'as.Date'){
+          df_convert_preview_t1()[, preview := as.Date(get(input$pE_convert_vars_sel))]
+        } else if(input$pE_convert_sel_format == 'as.raw'){
+          df_convert_preview_t1()[, preview := as.raw(get(input$pE_convert_vars_sel))]
+        } else if(input$pE_convert_sel_format == 'as.complex'){
+          df_convert_preview_t1()[, preview := as.complex(get(input$pE_convert_vars_sel))]
+        },
+        rownames = F,
+        options = list(dom = 'Btp', pageLength = 6,
+                       columnDefs = list(list(targets = 0:1, width = '200px', className = 'dt-center')))
+      )
+    })
+
+    observe({
+      if(input$pE_convert_sel_format == 'as.numeric'){
+        df$df_active[, input$pE_convert_vars_sel := as.numeric(get(input$pE_convert_vars_sel))]
+      } else if(input$pE_convert_sel_format == 'as.integer'){
+        df$df_active[, input$pE_convert_vars_sel := as.integer(get(input$pE_convert_vars_sel))]
+      } else if(input$pE_convert_sel_format == 'as.double'){
+        df$df_active[, input$pE_convert_vars_sel := as.double(get(input$pE_convert_vars_sel))]
+      } else if(input$pE_convert_sel_format == 'as.character'){
+        df$df_active[, input$pE_convert_vars_sel := as.character(get(input$pE_convert_vars_sel))]
+      } else if(input$pE_convert_sel_format == 'as.Date'){
+        df$df_active[, input$pE_convert_vars_sel := as.Date(get(input$pE_convert_vars_sel))]
+      } else if(input$pE_convert_sel_format == 'as.raw'){
+        df$df_active[, input$pE_convert_vars_sel := as.raw(get(input$pE_convert_vars_sel))]
+      } else if(input$pE_convert_sel_format == 'as.complex'){
+        df$df_active[, input$pE_convert_vars_sel := as.complex(get(input$pE_convert_vars_sel))]
+      }
+      showNotification('Conversion applied', type = 'message')
+    }) |> bindEvent(input$pE_convert_btn_apply)
+
     # reset df active ---------------------------
     observe({
-      df$df_active <- df$df
+      df$df_active <- copy(df$df)
       showNotification('Active Dataset Reseted', type = 'message', duration = 2)
     }) |> bindEvent(input$pE_btn_reset)
 
     # create backup ---------------------------
     observe({
-      df$df_backup <- df$df_active
+      df$df_backup <- copy(df$df_active)
       showNotification('Backup created', type = 'message', duration = 2)
     }) |> bindEvent(input$pE_export_btn_bkp)
 
@@ -670,11 +827,11 @@ dataviz <- function(dataset) {
       if(is.null(df$df_backup)){
         showNotification('No backup to restore', type = 'message', duration = 2)
       } else {
-        df$df_active <- df$df_backup
+        df$df_active <- copy(df$df_backup)
         showNotification('Backup restored', type = 'message', duration = 2)
-      }  
+      }
     }) |> bindEvent(input$pE_export_btn_restore)
-    
+
     # clear backup ---------------------------
     observe({
       if(is.null(df$df_backup)){
@@ -682,24 +839,28 @@ dataviz <- function(dataset) {
       } else {
         df$df_backup <- NULL
         showNotification('Backup cleared', type = 'message', duration = 2)
-      }  
+      }
     }) |> bindEvent(input$pE_export_btn_clear_bkp)
 
     # overview ----------------------------------
     output$pE_t1 <- renderDT(
       {
-        pE_over_sample_size <- min(100, nrow(df$df_active))
+        req(input$pE_over_size_sample)
+        pE_over_n_show <- max(1, input$pE_over_size_sample)
+        pE_over_n_show <- min(pE_over_n_show, nrow(df$df_active))
+
         if(input$pE_over_radio_sample == 'first'){
-          pE_over_idx <- 1:pE_over_sample_size
+          pE_over_idx <- 1:pE_over_n_show
         } else if (input$pE_over_radio_sample == 'sample'){
-          pE_over_idx <- sample.int(nrow(df$df_active), pE_over_sample_size, replace = F)
+          pE_over_idx <- sample.int(nrow(df$df_active), pE_over_n_show, replace = F)
         }
 
         df$df_active[pE_over_idx, ] |>
           datatable(
             extensions = 'ColReorder',
             rownames = F,
-            options = list(dom = 'Bftp', pageLength = 5, colReorder = T)
+            options = list(dom = 'Bftp', pageLength = 5, colReorder = T,
+              columnDefs = list(list(targets = '_all', className = 'dt-right')))
           )
       }
     )
@@ -708,23 +869,23 @@ dataviz <- function(dataset) {
     output$pE_export_down <- downloadHandler(
 
       filename = function() {
-        paste(input$pE_export_file_name, 
-          if(input$pE_export_radio_format == 'csv'){
-            '.csv'
-          } else if (input$pE_export_radio_format == 'RDS' |
-            input$pE_export_radio_format == 'RDS Compressed'){
-            '.RDS'
-          })
+        paste(input$pE_export_file_name,
+              if(input$pE_export_radio_format == 'csv'){
+                '.csv'
+              } else if (input$pE_export_radio_format == 'RDS' |
+                         input$pE_export_radio_format == 'RDS Compressed'){
+                '.RDS'
+              })
       },
       content = function(file) {
         if(input$pE_export_radio_format == 'csv'){
-          fwrite(df$df_active, file, 
-            row.names = input$pE_export_x_rownames,
-            # row.names = T,
-            sep = input$pE_export_radio_separator,
-            dec = input$pE_export_radio_decimal,
-            na = input$pE_export_txt_na,
-            scipen = as.integer(input$pE_export_radio_scientific)
+          fwrite(df$df_active, file,
+                 row.names = input$pE_export_x_rownames,
+                 # row.names = T,
+                 sep = input$pE_export_radio_separator,
+                 dec = input$pE_export_radio_decimal,
+                 na = input$pE_export_txt_na,
+                 scipen = as.integer(input$pE_export_radio_scientific)
           )
         } else if (input$pE_export_radio_format == 'RDS'){
           saveRDS(df$df_active, file, compress = F)
@@ -736,12 +897,12 @@ dataviz <- function(dataset) {
 
     # analysis page events ----------------------------------------------------
     output$pA_ui_var_names <- renderUI(
-      selectInput('pA_sel_vars', 'Main Variable', df_active_names()) |> 
+      selectInput('pA_sel_vars', 'Main Variable', df_active_names()) |>
         tooltip('Dependent Variable', placement = 'top')
     )
 
     output$pA_ui_var_names2 <- renderUI(
-      selectInput('pA_sel_vars2', 'Variable 2', df_active_names(), df_active_names()[2]) |> 
+      selectInput('pA_sel_vars2', 'Variable 2', df_active_names(), df_active_names()[2]) |>
         tooltip('Independent Variable', placement = 'top')
     )
 
