@@ -244,6 +244,37 @@ dataviz <- function(dataset) {
                    )
                  ),
                  nav_panel(
+                  'Order',
+                  layout_column_wrap(
+                    card(
+                      card_header('Order Rows', class = 'bg-primary'),
+                      card_body(
+                        uiOutput('pE_order_ui_var_rows'),
+                        selectInput('pE_order_vars_descending', 'Vars in desceding order', '', multiple = T) |> 
+                          tooltip('If not informed, the order will be Ascending', placement = 'right'),
+                      ),
+                      card_footer(
+                        btn_task('pE_order_btn_order_rows', 'Order Rows', icon('shuffle')),
+                      ) 
+                    ),
+                    card(
+                      card_header('Order Columns', class = 'bg-primary'),
+                      card_body(
+                        uiOutput('pE_order_ui_var_cols'),
+                        radioButtons('pE_order_radio_cols', NULL,
+                                  c('Before' = 'before', 'After' = 'after'),
+                                  inline = T),
+                        selectInput('pE_order_vars_rest', 'Other Variables', '') |> 
+                          tooltip('If not informed, the Other Variables will be placed at the end',
+                            placement = 'right'),
+                      ),
+                      card_footer(
+                        btn_task('pE_order_btn_order_cols', 'Order Columns', icon('arrow-right-arrow-left')),
+                      )                     
+                    )
+                  ),
+                ),
+                 nav_panel(
                    'Variables',
                    card_body(
                      DTOutput('pE_var_t')),
@@ -775,6 +806,64 @@ dataviz <- function(dataset) {
         msg('Conversion applied')
       }
     }) |> bindEvent(input$pE_convert_btn_apply)
+
+
+    # order rows events ---------------------------
+    output$pE_order_ui_var_rows <- renderUI(
+      selectInput('pE_order_vars_rows', 'Order by', c('', df_active_names()), multiple = T)
+    )
+
+    # vars in descending order
+    observe({
+      updateSelectInput(
+        session,
+        'pE_order_vars_descending',
+        label = 'Descending Order',
+        choices = input$pE_order_vars_rows
+      )
+    }) |> bindEvent(input$pE_order_vars_rows)
+
+    # btn order cols ---------------------------
+    observe({
+      pE_order_rows_position <- rep(1, input$pE_order_vars_rows |> length())
+      
+      pE_order_rows_position[which(input$pE_order_vars_rows %in% input$pE_order_vars_descending)] <- -1
+        
+      setorderv(df$df_active, cols = input$pE_order_vars_rows, 
+                order = pE_order_rows_position)
+      
+      msg('Reordering Rows: OK')
+      }) |> bindEvent(input$pE_order_btn_order_rows)   
+
+    # order cols events ---------------------------
+    output$pE_order_ui_var_cols <- renderUI(
+      selectInput('pE_order_vars_cols', 'Variables to move', c('', df_active_names()), multiple = T)
+    )
+
+    # rest of vars to order
+    observe({
+      updateSelectInput(
+        session,
+        'pE_order_vars_rest',
+        label = 'Other Variables',
+        choices = df_active_names()[df_active_names() %notin% input$pE_order_vars_cols]
+      )
+    }) |> bindEvent(input$pE_order_vars_cols)
+
+    # btn order cols ---------------------------
+    observe({
+      if(all(df_active_names() %in% input$pE_order_vars_cols) ||
+        input$pE_order_vars_rest == ''){
+        setcolorder(df$df_active, input$pE_order_vars_cols) 
+      } else if(input$pE_order_radio_cols == 'before'){
+        setcolorder(df$df_active, input$pE_order_vars_cols, 
+          before = input$pE_order_vars_rest)
+      } else if (input$pE_order_radio_cols == 'after') {
+        setcolorder(df$df_active, input$pE_order_vars_cols, 
+          after = input$pE_order_vars_rest)
+      }
+      msg('Reordering Variables: OK')
+      }) |> bindEvent(input$pE_order_btn_order_cols)
 
     # reset df active ---------------------------
     observe({
